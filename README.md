@@ -5,12 +5,12 @@ This repository contains all the code required to re-run the analyses in the MPh
 ## Repository structure
 The folder **R** contains all R code, separated into several sub-folders, with the following files in them:
 - Pre-analysis
-     - import_data.R 
+     - import_data.R --> NEEDS ADJUSTMENTS
      - missing_data.R
 - Original models
      - prognostic_scores.R
-     - calibration.R
-     - discrimination.R
+     - Calibration.R
+     - Discrimination.R
      - clinical_utility.R
      - dca.R
      - nb_diff.R
