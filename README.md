@@ -17,7 +17,7 @@ The repository contains several folders, with the following files in them:
 - Updating models
      - recalibrate.R. This file splits the data into training and test sets and runs regressions to update models. It also computes some basic performance measures for updated models.
      - compare_newmodels.R. This file performs all additional model comparisons between the updated models.
-     - compare_oldnew.R. This file formally compares certain statistics between original and updated models.
+     - compare_oldnew.R. --> NEEDS NEW UPLOAD This file formally compares certain statistics between original and updated models.
 - Subgroup comparison
      - subgroup_comparison.R. File that is used to analyse model performance in sub-groups of patients. 
 
