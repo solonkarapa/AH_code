@@ -74,6 +74,11 @@ var(as.numeric(stph_discharge_incomplete$days_in_study))
 hist(as.numeric(stph_discharge_complete$days_in_study), main = " ", xlab="Days until discharge", freq=FALSE)
 hist(as.numeric(stph_discharge_incomplete$days_in_study), main = " ", xlab="Days until discharge", freq=FALSE)
 
+# Calculate p-value for comparing time to discharge between groups
+discharge_test <- t.test(as.numeric(stph_discharge_complete$days_in_study), 
+                         as.numeric(stph_discharge_incomplete$days_in_study), paired = F, alternative = "two.sided")
+discharge_test$p.value
+
 # Assess whether early discharge could be related to early death
 length(which(as.numeric(stph_discharge_incomplete$days_until_death) <= 7))
 length(which(as.numeric(stph_discharge_complete$days_until_death) <= 7))
