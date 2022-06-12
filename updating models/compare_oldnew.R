@@ -25,6 +25,7 @@ roc.test(roc_lille_new, roc_lille_old) # p-value = 0.9996
 # First define the variables corresponding to mortality
 stph.cnew$clif.mort <- 1 - stph.cnew$CLIF.surv
 stph.cnew$meld.mort <- 1 - stph.cnew$MELD.surv
+stph.cnew$meld.mort2 <- 1 - stph.cnew$MELD.surv2
 stph.cnew$lille.mort <- 1 - stph.cnew$Lille.surv
 
 stph.cnew$clif.mort.new <- 1 - stph.cnew$clif.surv.updated
@@ -45,6 +46,17 @@ pvalue.meld <- NULL
 
 for(i in 1:length(boot.diff.meld$t0)){
   pvalue.meld <- c(pvalue.meld, mean(abs(boot.diff.meld$t[,i] - boot.diff.meld$t0[i]) > abs(boot.diff.meld$t0[i])))
+}
+
+# Calculate p-values for comparison of MELD2 scores
+boot.diff.meld2 <- boot(data=stph.cnew, statistic = nb_diff,
+                       R = R, outcome = "D90_DTH", pred1 = "meld.mort2",
+                       pred2 = "meld.mort.new", xstart = 0.25, xstop = 0.75,
+                       step = 0.05)
+pvalue.meld2 <- NULL
+
+for(i in 1:length(boot.diff.meld2$t0)){
+  pvalue.meld2 <- c(pvalue.meld2, mean(abs(boot.diff.meld2$t[,i] - boot.diff.meld2$t0[i]) > abs(boot.diff.meld2$t0[i])))
 }
 
 # Calculate p-values for comparison of CLIF-scores
@@ -72,11 +84,12 @@ for(i in 1:length(boot.diff.lille$t0)){
 # Append p-values together in a dataframe for easy accessibility
 pvalues_oldnew <- data.frame("threshold probability" = seq(from = 0.25, to = 0.75, by = 0.05),
                               "p-values MELD" = pvalue.meld,
+                              "p-values MELD2" = pvalue.meld2,
                               "p-values CLIF" = pvalue.clif,
                               "p-values Lille" = pvalue.lille)
 
 # Also show plots that illustrate how the models compare (to interpret p-values)
-meld_dca <- dca(data = stph.cnew, outcome = "D90_DTH", predictors = c("meld.mort", "meld.mort.new"), xstop = 0.75)
+meld_dca <- dca(data = stph.cnew, outcome = "D90_DTH", predictors = c("meld.mort", "meld.mort2", "meld.mort.new"), xstop = 0.75)
 clif_dca <- dca(data = stph.cnew, outcome = "D90_DTH", predictors = c("clif.mort", "clif.mort.new"), xstop = 0.75)
 lille_dca <- dca(data = stph.cnew, outcome = "D90_DTH", predictors = c("lille.mort", "lille.mort.new"), xstop = 0.75)
 
@@ -87,10 +100,11 @@ nb_data_lille <- lille_dca$net.benefit
 plot(nb_data_meld$threshold, nb_data_meld$none, type = "l", lwd = 2, xlab = "Threshold probability", ylab = "Net benefit", ylim = c(-0.05, 0.25))
 lines(nb_data_meld$threshold, nb_data_meld$all, type = "l", col = 8, lwd = 2)
 lines(nb_data_meld$threshold, nb_data_meld$meld.mort, type = "l", col = "darkred", lwd = 2)
+lines(nb_data_meld$threshold, nb_data_meld$meld.mort2, type = "l", col = "orange", lwd = 2)
 lines(nb_data_meld$threshold, nb_data_meld$meld.mort.new, type = "l", col = "darkgreen", lwd = 2)
 # Add a legend
-legend("topright", cex = 0.8, legend = c("Treat none", "Treat all", "Original MELD", "Updated MELD"),
-       col = c(17, 8, "darkred", "darkgreen"), lwd = c(2, 2, 2, 2, 2, 2))
+legend("topright", cex = 0.8, legend = c("Treat none", "Treat all", "Original MELD_1", "Original MELD_2", "Updated MELD"),
+       col = c(17, 8, "darkred", "orange", "darkgreen"), lwd = c(2, 2, 2, 2, 2, 2, 2))
 
 plot(nb_data_clif$threshold, nb_data_clif$none, type = "l", lwd = 2, xlab = "Threshold probability", ylab = "Net benefit", ylim = c(-0.05, 0.25))
 lines(nb_data_clif$threshold, nb_data_clif$all, type = "l", col = 8, lwd = 2)
