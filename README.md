@@ -5,7 +5,7 @@ This repository contains all the code required to re-run the analyses in the MPh
 ## Repository structure
 The repository contains several folders, with the following files in them:
 - Pre-analysis
-     - import_data.R --> NEEDS ADJUSTMENTS. This file imports the STOPAH data and renames some of the clinically relevant variables to have names that are easier to work with. It then creates complete-case dataframes for the different prognostic scores and prints a table of patient characteristics.
+     - import_data.R. This file imports the STOPAH data and renames some of the clinically relevant variables to have names that are easier to work with. It then creates complete-case dataframes for the different prognostic scores and prints a table of patient characteristics.
      - missing_data.R. This file creates sub-sets of complete and incomplete cases in the data and tabulates and compares patient characteristics across them. This file also analyses the additional discharge data to compare time to hospital discharge between sub-samples.
 - Original models
      - prognostic_scores.R. This file calculates the relevant prognostic scores and corresponding survival probabilities.
