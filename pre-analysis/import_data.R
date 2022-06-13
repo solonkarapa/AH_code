@@ -4,7 +4,6 @@ library(tidyverse)
 library(dplyr)
 
 # Load data 
-setwd("/Users/laura/Documents/PHS dissertation/R code")
 load("stopah_plus_scores.Rdata")
 stph <- rename(data_stph_prelim3)
 
