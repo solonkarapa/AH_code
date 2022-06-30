@@ -7,11 +7,88 @@ library(pROC)
 # Set random seed
 set.seed(34)
 
-# MELD score re-calibration 
-# First split the data into training and test with 80% in training
-dt = sort(sample(nrow(stph.meld), nrow(stph.meld)*.8))
-test.meld <- stph.meld[dt,]
-train.meld <- stph.meld[-dt,]
+######
+# Split complete-case sample in training and test observations
+dt <- sort(sample(nrow(stph.c), nrow(stph.c)*.8))
+test.data.c <- stph.c[dt,]
+train.data.c <- stph.c[-dt,]
+
+# Fit a logistic regression model on the training data
+meld_regr <- glm(D90_surv ~ MELD.calc, family = binomial, data = train.data.c)
+
+# Save the regression coefficients (alpha and beta)
+ic_meld_c <- meld_regr$coefficients[1]
+slope_meld_c <- meld_regr$coefficients[2]
+
+# Calculate adjusted MELD score and survival probability on training set
+train.data.c$updated.meld <- ic_meld_c + slope_meld_c*train.data.c$MELD.calc
+train.data.c$meld.surv.updated <- 1/(1+exp(-train.data.c$updated.meld))
+
+# Calculate adjusted scores on the test set and assess performance
+test.data.c$updated.meld <- ic_meld_c + slope_meld_c*test.data.c$MELD.calc
+test.data.c$meld.surv.updated <- 1/(1+exp(-test.data.c$updated.meld))
+
+roc_meld_uc <- roc(test.data.c$D90_surv, test.data.c$meld.surv.updated)
+ci.auc(roc_meld_uc)
+
+val.prob(test.data.c$meld.surv.updated, test.data.c$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
+         xlab = "Predicted survival probability", ylab = "Actual survival probability",
+         legendloc = FALSE, statloc = FALSE)
+
+# Lille score re-calibration
+# Run logistic regression and save regression coefficientss
+lille_regr <- glm(D90_surv ~ LILLE, family = binomial, data = train.data.c)
+
+ic_lille_c <- lille_regr$coefficients[1]
+slope_lille_c <- lille_regr$coefficients[2]
+
+# Update scores in training set
+train.data.c$updated.lille <- ic_lille_c + slope_lille_c*train.data.c$LILLE
+train.data.c$lille.surv.updated <- 1/(1 + exp(-train.data.c$updated.lille))
+
+# Assess performance on the test set
+test.data.c$updated.lille <- ic_lille_c + slope_lille_c*test.data.c$LILLE
+test.data.c$lille.surv.updated <- 1/(1 + exp(-test.data.c$updated.lille))
+
+roc_lille_uc <- roc(test.data.c$D90_surv, test.data.c$lille.surv.updated)
+ci.auc(roc_lille_uc)
+
+val.prob(test.data.c$lille.surv.updated, test.data.c$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
+         xlab = "Predicted survival probability", ylab = "Actual survival probability",
+         legendloc = FALSE, statloc = FALSE)
+
+# CLIF-C ACLF score re-calibration
+# Run logistic regression and save regression coefficientss
+clif_regr <- glm(D90_surv ~ CLIF.C, family = binomial, data = train.data.c)
+
+ic_clif_c <- clif_regr$coefficients[1]
+slope_clif_c <- clif_regr$coefficients[2]
+
+# Update scores in training set
+train.data.c$updated.clif <- ic_clif_c + slope_clif_c*train.data.c$CLIF.C
+train.data.c$clif.surv.updated <- 1/(1 + exp(-train.data.c$updated.clif))
+
+# Assess performance on the test set
+test.data.c$updated.clif <- ic_clif_c + slope_clif_c*test.data.c$CLIF.C
+test.data.c$clif.surv.updated <- 1/(1 + exp(-test.data.c$updated.clif))
+
+roc_clif_uc <- roc(test.data.c$D90_surv, test.data.c$clif.surv.updated)
+ci.auc(roc_clif_uc)
+
+val.prob(test.data.c$clif.surv.updated, test.data.c$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
+         xlab = "Predicted survival probability", ylab = "Actual survival probability", 
+         legendloc = FALSE, statloc = FALSE)
+
+######
+# Sensitivity analysis; split data on full stph sample and then select the complete cases
+# Split full sample in training and test observations
+dt <- sort(sample(nrow(stph), nrow(stph)*.8))
+test.data <- stph[dt,]
+train.data <- stph[-dt,]
+
+# MELD score re-calibration
+test.meld <- stph.meld[stph.meld$Subject %in% test.data$Subject,]
+train.meld <- stph.meld[stph.meld$Subject %in% train.data$Subject,]
 
 # Fit a logistic regression model on the training data
 meld_regr <- glm(D90_surv ~ MELD.calc, family = binomial, data = train.meld)
@@ -24,12 +101,6 @@ slope_meld <- meld_regr$coefficients[2]
 train.meld$updated.meld <- ic_meld + slope_meld*train.meld$MELD.calc
 train.meld$meld.surv.updated <- 1/(1+exp(-train.meld$updated.meld))
 
-# Calculate roc and calibration
-roc(train.meld$D90_surv, train.meld$meld.surv.updated)
-
-val.prob(train.meld$meld.surv.updated, train.meld$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
-         legendloc = FALSE, statloc = FALSE)
-
 # Calculate adjusted scores on the test set and assess performance
 test.meld$updated.meld <- ic_meld + slope_meld*test.meld$MELD.calc
 test.meld$meld.surv.updated <- 1/(1+exp(-test.meld$updated.meld))
@@ -38,6 +109,7 @@ roc_meld_u <- roc(test.meld$D90_surv, test.meld$meld.surv.updated)
 ci.auc(roc_meld_u)
 
 val.prob(test.meld$meld.surv.updated, test.meld$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
+         xlab = "Predicted survival probability", ylab = "Actual survival probability",
          legendloc = FALSE, statloc = FALSE)
 
 # Finally, add the updated scores to the full MELD df
@@ -46,9 +118,8 @@ stph.meld$meld.surv.updated <- 1/(1+exp(-stph.meld$updated.meld))
 
 # Lille score re-calibration
 # Split Lille dataframe into training and test
-dt = sort(sample(nrow(stph.lille), nrow(stph.lille)*.8))
-test.lille <- stph.lille[dt,]
-train.lille <- stph.lille[-dt,]
+test.lille <- stph.lille[stph.lille$Subject %in% test.data$Subject,]
+train.lille <- stph.lille[stph.lille$Subject %in% train.data$Subject,]
 
 # Run logistic regression and save regression coefficientss
 lille_regr <- glm(D90_surv ~ LILLE, family = binomial, data = train.lille)
@@ -60,11 +131,6 @@ slope_lille <- lille_regr$coefficients[2]
 train.lille$updated.lille <- ic_lille + slope_lille*train.lille$LILLE
 train.lille$lille.surv.updated <- 1/(1 + exp(-train.lille$updated.lille))
 
-roc(train.lille$D90_surv, train.lille$lille.surv.updated)
-
-val.prob(train.lille$lille.surv.updated, train.lille$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
-         legendloc = FALSE, statloc = FALSE)
-
 # Assess performance on the test set
 test.lille$updated.lille <- ic_lille + slope_lille*test.lille$LILLE
 test.lille$lille.surv.updated <- 1/(1 + exp(-test.lille$updated.lille))
@@ -73,6 +139,7 @@ roc_lille_u <- roc(test.lille$D90_surv, test.lille$lille.surv.updated)
 ci.auc(roc_lille_u)
 
 val.prob(test.lille$lille.surv.updated, test.lille$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
+         xlab = "Predicted survival probability", ylab = "Actual survival probability",
          legendloc = FALSE, statloc = FALSE)
 
 # Finally, add the updated scores to the full Lille df
@@ -81,9 +148,8 @@ stph.lille$lille.surv.updated <- 1/(1 + exp(-stph.lille$updated.lille))
 
 # CLIF-C ACLF score re-calibration
 # Split CLIF-C ACLF dataframe into training and test
-dt = sort(sample(nrow(stph.clif), nrow(stph.clif)*.8))
-test.clif <- stph.clif[dt,]
-train.clif <- stph.clif[-dt,]
+test.clif <- stph.clif[stph.clif$Subject %in% test.data$Subject,]
+train.clif <- stph.clif[stph.clif$Subject %in% train.data$Subject,]
 
 # Run logistic regression and save regression coefficientss
 clif_regr <- glm(D90_surv ~ CLIF.C, family = binomial, data = train.clif)
@@ -95,11 +161,6 @@ slope_clif <- clif_regr$coefficients[2]
 train.clif$updated.clif <- ic_clif + slope_clif*train.clif$CLIF.C
 train.clif$clif.surv.updated <- 1/(1 + exp(-train.clif$updated.clif))
 
-roc(train.clif$D90_surv, train.clif$clif.surv.updated)
-
-val.prob(train.clif$clif.surv.updated, train.clif$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
-         legendloc = FALSE, statloc = FALSE)
-
 # Assess performance on the test set
 test.clif$updated.clif <- ic_clif + slope_clif*test.clif$CLIF.C
 test.clif$clif.surv.updated <- 1/(1 + exp(-test.clif$updated.clif))
@@ -108,8 +169,11 @@ roc_clif_u <- roc(test.clif$D90_surv, test.clif$clif.surv.updated)
 ci.auc(roc_clif_u)
 
 val.prob(test.clif$clif.surv.updated, test.clif$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
+         xlab = "Predicted survival probability", ylab = "Actual survival probability", 
          legendloc = FALSE, statloc = FALSE)
 
 # Finally, add the updated scores to the full CLIF-C ACLF df
 stph.clif$updated.clif <- ic_clif + slope_clif*stph.clif$CLIF.C
 stph.clif$clif.surv.updated <- 1/(1 + exp(-stph.clif$updated.clif))
+
+
