@@ -14,12 +14,12 @@ roc.test(roc_meld3, roc_meld)
 roc.test(roc_meld3, roc_meld_u)
 
 ######
-# Subgroups per gender
-# Calculations on the MELD3.0 score - first create two separate dfs for simplicity
+# Sub-group based on sex 
+# Calculations on the MELD3.0 score - first create two separate dfs per sex
 stph.meld.males <- stph.meld[stph.meld$Gender == 0,]
 stph.meld.females <- stph.meld[stph.meld$Gender == 1,]
 
-# Calibration plots for males/females separately
+# Calibration plots and calculations for males/females separately
 val.prob(stph.meld.males$MELD3.surv, stph.meld.males$D90_surv, 
          xlab = "Predicted survival probability", ylab = "Actual survival probability", 
          pl = TRUE, smooth = FALSE, logistic.cal = TRUE, legendloc = FALSE, statloc = FALSE)
@@ -118,7 +118,7 @@ auc_lille_ci_f <- ci.auc(roc_lille_f) # Confidence intervals
 ######
 # p-value comparisons between male and female sub-samples
 
-# Formally ompare the c-statistics across models using bootstrap method
+# Formally compare the c-statistics across models using bootstrap method
 compareroc.meld3 <- roc.test(roc_meld3_f, roc_meld3_m) 
 compareroc.meld <- roc.test(roc_meld_f, roc_meld_m) 
 compareroc.clif <- roc.test(roc_clif_f, roc_clif_m)
@@ -130,7 +130,7 @@ names(roc_pvalues_mf) <- c("MELD 3.0", "MELD", "CLIF", "Lille")
 roc_pvalues_mf
 
 ######
-# Age stratification
+# Age stratification: first find the mean age and the age distribution of the data
 hist(stph$Age.at.randomisation..calc.)
 summary(stph$Age.at.randomisation..calc.)
 
@@ -206,7 +206,7 @@ auc_clif_o <- auc(roc_clif_o)
 auc_clif_ci_o <- ci.auc(roc_clif_o) # Confidence intervals
 
 ######
-# Formally ompare the c-statistics across models using bootstrap method
+# Formally compare the c-statistics across models using bootstrap method
 compareroc.meld <- roc.test(roc_meld_y, roc_meld_o) 
 compareroc.clif <- roc.test(roc_clif_y, roc_clif_o)
 compareroc.lille <- roc.test(roc_lille_y, roc_lille_o)
