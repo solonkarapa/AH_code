@@ -8,17 +8,17 @@ library(pROC)
 # MELD
 roc_meld_new <- roc(test.data.c$D90_surv, test.data.c$meld.surv.updated)
 roc_meld_old <- roc(test.data.c$D90_surv, test.data.c$MELD.surv)
-roc.test(roc_meld_old, roc_meld_new) # p-value = 0.659
+roc.test(roc_meld_old, roc_meld_new) 
 
 # CLIF-C ACLF
 roc_clif_new <- roc(test.data.c$D90_surv, test.data.c$clif.surv.updated)
 roc_clif_old <- roc(test.data.c$D90_surv, test.data.c$CLIF.surv)
-roc.test(roc_clif_new, roc_clif_old) # p-value = 0.672
+roc.test(roc_clif_new, roc_clif_old) 
 
 # Lille
 roc_lille_new <- roc(test.data.c$D90_surv, test.data.c$lille.surv.updated)
 roc_lille_old <- roc(test.data.c$D90_surv, test.data.c$Lille.surv)
-roc.test(roc_lille_new, roc_lille_old) # p-value = 0.693
+roc.test(roc_lille_new, roc_lille_old)
 
 ######
 # Comparison of NB
@@ -97,6 +97,7 @@ nb_data_meld <- meld_dca$net.benefit
 nb_data_clif <- clif_dca$net.benefit
 nb_data_lille <- lille_dca$net.benefit
 
+# NB plot for the old and new MELD scores
 plot(nb_data_meld$threshold, nb_data_meld$none, type = "l", lwd = 2, xlab = "Threshold mortality probability", ylab = "Net benefit", ylim = c(-0.05, 0.25))
 lines(nb_data_meld$threshold, nb_data_meld$all, type = "l", col = 8, lwd = 2)
 lines(nb_data_meld$threshold, nb_data_meld$meld.mort, type = "l", col = "darkred", lwd = 2)
@@ -106,6 +107,7 @@ lines(nb_data_meld$threshold, nb_data_meld$meld.mort.new, type = "l", col = "dar
 legend("topright", cex = 0.8, legend = c("Treat none", "Treat all", "Original MELD_1", "Original MELD_2", "Updated MELD"),
        col = c(17, 8, "darkred", "orange", "darkgreen"), lwd = c(2, 2, 2, 2, 2, 2, 2))
 
+# NB plot for the old and new CLIF-C ACLF scores
 plot(nb_data_clif$threshold, nb_data_clif$none, type = "l", lwd = 2, xlab = "Threshold mortality probability", ylab = "Net benefit", ylim = c(-0.05, 0.25))
 lines(nb_data_clif$threshold, nb_data_clif$all, type = "l", col = 8, lwd = 2)
 lines(nb_data_clif$threshold, nb_data_clif$clif.mort, type = "l", col = "darkred", lwd = 2)
@@ -114,6 +116,7 @@ lines(nb_data_clif$threshold, nb_data_clif$clif.mort.new, type = "l", col = "dar
 legend("topright", cex = 0.8, legend = c("Treat none", "Treat all", "Original CLIF-C ACLF", "Updated CLIF-C ACLF"),
        col = c(17, 8, "darkred", "darkgreen"), lwd = c(2, 2, 2, 2, 2, 2))
 
+# NB plot for the old and new Lille scores
 plot(nb_data_lille$threshold, nb_data_lille$none, type = "l", lwd = 2, xlab = "Threshold mortality probability", ylab = "Net benefit", ylim = c(-0.05, 0.25))
 lines(nb_data_lille$threshold, nb_data_lille$all, type = "l", col = 8, lwd = 2)
 lines(nb_data_lille$threshold, nb_data_lille$lille.mort, type = "l", col = "darkred", lwd = 2)
