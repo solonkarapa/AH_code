@@ -7,11 +7,11 @@
 #' @param data dataset that includes the predictor and outcome variables
 #' @param ii indices parameter for bootstrap
 #' @param outcome 0/1 outcome variable
-#' @param pred1 first predictor for the outcome in the data
-#' @param pred2 second predictor for the outcome in the data
+#' @param pred1 first predictor for survival 
+#' @param pred2 second predictor for survival 
 #' @param xstart lowest value of threshold probability to be looked at
 #' @param xstop highest value of threshold probability to consider
-#' @param step stepsize for looking at different threshold probabilities
+#' @param step step size for looking at different threshold probabilities
 
 nb_diff <- function(data, ii, outcome, pred1, pred2, xstart, xstop, step){
   dd <- data[ii,]

@@ -1,5 +1,4 @@
 #' Function that performs and plots the dca for prognostic models
-#' ALL CODE TAKEN FROM ONLINE SOURCE, NOT MY OWN WORK
 #' Code taken from decisioncurveanalysis.org, referenced by 
 #' Vickers AJ, Elkin EB. Decision curve analysis: a novel method for evaluating prediction models. Medical Decision Making. 2006;26(6):565-74.
 #' 
