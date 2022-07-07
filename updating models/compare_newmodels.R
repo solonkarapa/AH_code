@@ -1,4 +1,4 @@
-# This script performs model comparison for the re-calibrated models
+# This script performs model comparisons for the re-calibrated models
 
 # H-L test for the updated models
 library(ResourceSelection)
@@ -13,7 +13,7 @@ hoslem.test(test.lille$D90_surv, test.lille$lille.surv.updated)
 hoslem.test(test.clif$D90_surv, test.clif$clif.surv.updated)
 
 #####
-# Comparison of c-statistics 
+# Comparison of c-statistics using p-values
 library(pROC)
 roc_meld <- roc(test.data.c$D90_surv, test.data.c$meld.surv.updated)
 roc_lille <- roc(test.data.c$D90_surv, test.data.c$lille.surv.updated)
