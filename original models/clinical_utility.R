@@ -7,7 +7,7 @@ source("dca.R") # dca.R is taken from decisioncurveanalysis.org
 # Since decision curves look better when working with mortality probability rather than survival, first
 # define variables corresponding to 90-day mortality
 stph.c$clif.mort <- 1 - stph.c$CLIF.surv
-stph.c$meld.mort <- 1 - stph.c$MELD.survf
+stph.c$meld.mort <- 1 - stph.c$MELD.surv
 stph.c$meld.mort2 <- 1 - stph.c$MELD.surv2
 stph.c$lille.mort <- 1 - stph.c$Lille.surv
 stph.c$meld3.mort <- 1 - stph.c$MELD3.surv
@@ -16,7 +16,7 @@ stph.c$meld3.mort <- 1 - stph.c$MELD3.surv
 full_dca <- dca(data = stph.c, outcome = "D90_DTH", predictors = c("clif.mort", "meld.mort", "meld.mort2", "lille.mort"), xstop = 0.75)
 nb_data <- full_dca$net.benefit
 
-plot(nb_data$threshold, nb_data$none, type = "l", lwd = 2, xlab = "Threshold probability", ylab = "Net benefit", ylim = c(-0.05, 0.25))
+plot(nb_data$threshold, nb_data$none, type = "l", lwd = 2, xlab = "Threshold mortality probability", ylab = "Net benefit", ylim = c(-0.05, 0.25))
 lines(nb_data$threshold, nb_data$all, type = "l", col = 8, lwd = 2)
 lines(nb_data$threshold, nb_data$meld.mort, type = "l", col = "darkblue", lwd = 2)
 lines(nb_data$threshold, nb_data$meld.mort2, type = "l", col = "darkgreen", lwd = 2)
@@ -39,7 +39,7 @@ library(boot)
 set.seed(34) 
 R <- 500 # Number of bootstrap samples
 
-# Compare the CLIF and MELD models
+# Compare the CLIF-C ACLF and MELD models
 boot.diff.cm <- boot(data=stph.c, statistic = nb_diff,
                     R = R, outcome = "D90_DTH", pred1 = "clif.mort",
                     pred2 = "meld.mort", xstart = 0.25, xstop = 0.75,
@@ -61,7 +61,7 @@ for(i in 1:length(boot.diff.ml$t0)){
   pvalue.ml <- c(pvalue.ml, mean(abs(boot.diff.ml$t[,i] - boot.diff.ml$t0[i]) > abs(boot.diff.ml$t0[i])))
 }
 
-# Compare the CLIF and Lille model
+# Compare the CLIF-C ACLF and Lille model
 boot.diff.cl <- boot(data=stph.c, statistic = nb_diff,
                      R = R, outcome = "D90_DTH", pred1 = "clif.mort",
                      pred2 = "lille.mort", xstart = 0.25, xstop = 0.75,
@@ -72,7 +72,7 @@ for(i in 1:length(boot.diff.cl$t0)){
   pvalue.cl <- c(pvalue.cl, mean(abs(boot.diff.cl$t[,i] - boot.diff.cl$t0[i]) > abs(boot.diff.cl$t0[i])))
 }
 
-# Compare CLIF with the MELD_2
+# Compare CLIF-C ACLF with the MELD_2
 boot.diff.cm2 <- boot(data=stph.c, statistic = nb_diff,
                      R = R, outcome = "D90_DTH", pred1 = "clif.mort",
                      pred2 = "meld.mort2", xstart = 0.25, xstop = 0.75,
