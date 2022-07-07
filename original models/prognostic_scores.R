@@ -44,12 +44,12 @@ stph.meld$MELD.calc <- round(stph.meld$MELD.calc, 0)
 stph.meld$MELD.calc <- ifelse(stph.meld$MELD.calc < 6, 6, stph.meld$MELD.calc)
 stph.meld$MELD.calc <- ifelse(stph.meld$MELD.calc > 40, 40, stph.meld$MELD.calc)
 
-# Calculate 90-day survival probability based on MELD score (2 different functions)
+# Calculate 90-day survival probability based on MELD-Na score (2 different functions)
 stph.meld$MELD.surv <- 0.707^(exp((stph.meld$MELD.calc/10) - 1.127)) 
 stph.meld$MELD.surv2 <- 0.98465^(exp(0.1635*(stph.meld$MELD.calc - 10)))  
 
 ####
-# Add MELD3.0
+# Calculate the MELD3.0 score (sex-adjusted version of the MELD)
 # Constrain Albumin 
 stph.meld$Albumin.MELD <- ifelse(stph.meld$Albumin < 1.5, 1.5, stph.meld$Albumin)
 stph.meld$Albumin.MELD <- ifelse(stph.meld$Albumin > 3.5, 3.5, stph.meld$Albumin)
@@ -111,6 +111,5 @@ library(table1)
 table1::table1(~MELD.calc + MELD.surv + MELD.surv2 + MELD3.surv, data = stph.meld)
 table1::table1(~LILLE + Lille.surv, data = stph.lille)
 table1::table1(~CLIF.C + CLIF.surv, data = stph.clif)
-
 
 
