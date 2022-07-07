@@ -1,6 +1,6 @@
-# This script performs recalibration of models using the method proposed by Janssen et al. (2008).
+# This script performs recalibration of models using the method proposed by Steyerberg et al. (2004).
 # For each prognostic model (MELD, Lille and CLIF-C ACLF), a logistic regression model is used to 
-# find recalibration parameters and the risk is re-calculated using these parameters. 
+# find recalibration parameters and the survival probability is re-calculated using these parameters. 
 library(rms)
 library(pROC)
 
@@ -80,7 +80,7 @@ val.prob(test.data.c$clif.surv.updated, test.data.c$D90_surv, pl = TRUE, smooth 
          legendloc = FALSE, statloc = FALSE)
 
 ######
-# Sensitivity analysis; split data on full stph sample and then select the complete cases
+# Sensitivity analysis; split data on full stph sample and then select the complete cases per model
 # Split full sample in training and test observations
 dt <- sort(sample(nrow(stph), nrow(stph)*.8))
 test.data <- stph[dt,]
