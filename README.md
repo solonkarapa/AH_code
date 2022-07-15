@@ -18,6 +18,7 @@ The repository contains several folders, with the following files in them:
      - recalibrate.R. This file splits the data into training and test sets and runs regressions to update models. It also computes some basic performance measures for updated models.
      - compare_newmodels.R. This file performs all additional model comparisons between the updated models.
      - compare_oldnew.R. This file formally compares certain statistics between original and updated models.
+     - val_prob_confidence.R is a function that calculates the calibration measures, including SEs and confidence intervals for the calibration slope and intercepts. This function is an adaptation from two existing functions: val.prob from Frank Harrell's rms package, and val.prob.ci.2 from the CalibrationCurves package (Van Calster et al.)
 - Subgroup comparison
      - subgroup_comparison.R. File that is used to analyse model performance in sub-groups of patients. 
 
