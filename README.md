@@ -1,6 +1,6 @@
 # Validation of prognostic models in alcoholic hepatitis
 
-This repository contains all the code required to re-run the analyses in the MPhil Dissertation "Validation of prognostic models in alcoholic hepatitis". Corresponding data files are not public and therefore not provided.
+This repository contains all the code required to re-run the analyses in the MPhil Dissertation "Validating and updating prognostic models for alcoholic hepatitis". Corresponding data files are not public and therefore not provided.
 
 ## Repository structure
 The repository contains several folders, with the following files in them:
