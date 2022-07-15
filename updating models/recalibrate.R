@@ -3,6 +3,7 @@
 # find recalibration parameters and the survival probability is re-calculated using these parameters. 
 library(rms)
 library(pROC)
+source("val_prob_confidence.R")
 
 # Set random seed
 set.seed(34)
@@ -78,6 +79,20 @@ ci.auc(roc_clif_uc)
 val.prob(test.data.c$clif.surv.updated, test.data.c$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
          xlab = "Predicted survival probability", ylab = "Actual survival probability", 
          legendloc = FALSE, statloc = FALSE)
+
+# Confidence intervals/SEs for the slope and intercept
+# val_prob_confidence is used to get SEs for the calibration intercepts and slopes (and CIs in the plots)
+val_prob_confidence(test.data.c$meld.surv.updated, test.data.c$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
+                    xlab = "Predicted survival probability", ylab = "Actual survival probability",
+                    legendloc = T, roundstats = 3)
+
+val_prob_confidence(test.data.c$clif.surv.updated, test.data.c$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
+                    xlab = "Predicted survival probability", ylab = "Actual survival probability",
+                    legendloc = T, dostats = TRUE, roundstats = 3)
+
+val_prob_confidence(test.data.c$lille.surv.updated, test.data.c$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
+                    xlab = "Predicted survival probability", ylab = "Actual survival probability",
+                    legendloc = T, dostats = TRUE)
 
 ######
 # Sensitivity analysis; split data on full stph sample and then select the complete cases per model
@@ -175,5 +190,19 @@ val.prob(test.clif$clif.surv.updated, test.clif$D90_surv, pl = TRUE, smooth = FA
 # Finally, add the updated scores to the full CLIF-C ACLF df
 stph.clif$updated.clif <- ic_clif + slope_clif*stph.clif$CLIF.C
 stph.clif$clif.surv.updated <- 1/(1 + exp(-stph.clif$updated.clif))
+
+# Confidence intervals/SEs for the slope and intercept
+# val_prob_confidence is used to get SEs for the calibration intercepts and slopes (and CIs in the plots)
+val_prob_confidence(test.meld$meld.surv.updated, test.meld$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
+                    xlab = "Predicted survival probability", ylab = "Actual survival probability",
+                    legendloc = T, dostats = TRUE, roundstats = 3)
+
+val_prob_confidence(test.clif$clif.surv.updated, test.clif$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
+                    xlab = "Predicted survival probability", ylab = "Actual survival probability",
+                    legendloc = T, dostats = TRUE, roundstats = 3)
+
+val_prob_confidence(test.lille$lille.surv.updated, test.lille$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
+                    xlab = "Predicted survival probability", ylab = "Actual survival probability",
+                    legendloc = T, dostats = TRUE, roundstats = 3)
 
 
