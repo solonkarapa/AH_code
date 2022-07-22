@@ -1,4 +1,4 @@
-# Validation of prognostic models in alcoholic hepatitis
+# Validating and updating prognostic models for alcoholic hepatitis
 
 This repository contains all the code required to re-run the analyses in the MPhil Dissertation "Validating and updating prognostic models for alcoholic hepatitis". Corresponding data files are not public and therefore not provided.
 
