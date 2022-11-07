@@ -1,44 +1,86 @@
 # This script performs all calculations for assessing discrimination
-library(tidyverse)
+
 library(pROC)
 library(dplyr)
 library(ggplot2)
-library(runway)
+library(ggROC)
 
-# AUROC calculation and figure for MELD
+#############################################   
+############### Calculate AUCs  #############
+#############################################  
+
+# MELD (survival function 1 and 2 do not matter here)
 roc_meld <- roc(stph.meld$D90_DTH, stph.meld$MELD.surv)
-auc_meld <- auc(roc_meld)
-auc_meld_ci <- ci.auc(roc_meld) # Confidence intervals
 
-roc_plot(stph.meld, "D90_surv", "MELD.surv", ci = TRUE, plot_title = "ROC curve for the MELD score")
-
-# AUROC calculation and figure for MELD 3.0
+# MELD 3.0
 roc_meld3 <- roc(stph.meld$D90_DTH, stph.meld$MELD3.surv)
-auc_meld3 <- auc(roc_meld3)
-auc_meld3_ci <- ci.auc(roc_meld3) # Confidence intervals
 
-roc_plot(stph.meld, "D90_surv", "MELD3.surv", ci = TRUE, plot_title = "ROC curve for the MELD score")
+# MELD from VanDerwerken et al 2021
+roc_meld.VanDerwerken <- roc(stph.meld$D90_DTH, stph.meld$MELD_Van)
 
-# AUROC calculation and figure for Lille
+# Lille
 roc_lille <- roc(stph.lille$D90_DTH, stph.lille$Lille.surv)
-auc_lille <- auc(roc_lille)
-auc_lille_ci <- ci.auc(roc_lille)
 
-roc_plot(stph.lille, "D90_surv", "Lille.surv", ci = TRUE, plot_title = "ROC curve for the Lille score")
-
-# AUROC calculation and figure for CLIF-C ACLF
+# CLIF-C ACLF
 roc_clif <- roc(stph.clif$D90_DTH, stph.clif$CLIF.surv)
-auc_clif <- auc(roc_clif)
-auc_clif_ci <- ci.auc(roc_clif)
 
-roc_plot(stph.clif, "D90_surv", "CLIF.surv", ci = TRUE, plot_title = "ROC curve for the CLIF-C ACLF score")
+
+# CI
+#auc_meld <- auc(roc_meld)
+#auc_meld_ci <- ci.auc(roc_meld) # Confidence intervals
+#roc_plot(stph.meld, "D90_surv", "MELD.surv", ci = TRUE, plot_title = "ROC curve for the MELD score")
+
+#############################################   
+###################### Plots  ###############
+############################################# 
+roc.list <- list("MELD" = roc_meld, 
+           "MELD VanDerwerken" = roc_meld.VanDerwerken,
+           "CLIF-C ACLF" = roc_clif, 
+           "Lille" = roc_lille)
+
+g.list <- ggroc(roc.list)
 
 # ROC plot of all models combined
-library(ggROC)
-ggroc(list(MELD = roc_meld, CLIF = roc_clif, Lille = roc_lille))
+g.list +
+    geom_line(lwd = 1) +
+    geom_abline(slope = 1, intercept = 1, linetype = "dashed") + 
+    theme_classic()
+
+# faceting 
+g.list + 
+    facet_grid(. ~ name) + 
+    geom_line(lwd = 1) + 
+    geom_abline(slope = 1, intercept = 1, linetype = "dashed") +
+    theme_classic() + 
+    theme(legend.position="none") 
+
+# add confidence bands
+ci.list <- lapply(roc.list, ci.se, specificities = seq(0, 1, l = 25))
+
+dat.ci.list <- lapply(ci.list, function(ciobj) 
+    data.frame(x = as.numeric(rownames(ciobj)),
+               lower = ciobj[, 1],
+               upper = ciobj[, 3]))
+
+df <- plyr::ldply(dat.ci.list, data.frame, .id = "name")
+
+ggroc(roc.list) + 
+    facet_grid(. ~ name) +
+    theme_minimal() + 
+    geom_ribbon(data = df, aes(x = x, ymin = lower, ymax = upper, fill = name), alpha = 0.3, inherit.aes = F) +
+    geom_abline(slope = 1, intercept = 1, linetype = "dashed") + 
+    labs(x = "Specificity", y = "Sensitivity") + 
+    coord_equal() +
+    theme_classic() +
+    theme(legend.position = "none") 
+
+# To have all the curves of the same color, use aes="group":
+#g.group <- ggroc(roc.list, aes="group")
+#g.group
+#g.group + facet_grid(.~name)
 
 #####
-# Formally ompare the c-statistics across models using bootstrap method
+# Formally compare the c-statistics across models using bootstrap method
 compareroc.mc <- roc.test(roc_clif, roc_meld) # comparison between MELD and CLIF
 compareroc.ml <- roc.test(roc_meld, roc_lille) # comparison between MELD and Lille
 compareroc.cl <- roc.test(roc_clif, roc_lille) # comparison between CLIF and Lille

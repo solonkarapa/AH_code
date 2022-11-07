@@ -4,7 +4,8 @@ library(tidyverse)
 library(dplyr)
 
 # Load data 
-load("stopah_plus_scores.Rdata")
+path <- "/Users/work/IDrive-Sync/Projects/MIMAH/data"
+load(paste0(path, "/stopah_plus_scores.Rdata"))
 stph <- rename(data_stph_prelim3)
 
 # Rename relevant variables
@@ -16,7 +17,7 @@ stph <- rename(stph, INR = INR...Merged.clinical.and.calc)
 stph <- rename(stph, protime = Prothrombin.Time..patient....Merged) # Prothrombin time
 stph <- rename(stph, HE = Hepatic.Encephalopathy...Merged) # Brain function
 stph <- rename(stph, Sodium = Sodium...Merged)
-
+    
 # Create survival variable
 stph$D90_surv <- 1 - stph$D90_DTH
 

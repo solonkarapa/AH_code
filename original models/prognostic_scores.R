@@ -4,8 +4,10 @@ library(tidyverse)
 library(dplyr)
 library(ggplot2)
 
-######
-# MELD score calculations
+#############################################
+############### MELD score ##################
+#############################################
+#####
 # First constrain INR, Creatinine, and Bilirubin to be within certain bandwidth
 stph.meld$INR <- ifelse(stph.meld$INR < 1, 1, stph.meld$INR)
 stph.meld$Creatinine.mg.dl.MELD <- ifelse(stph.meld$Creatinine.mg.dl < 1, 1, stph.meld$Creatinine.mg.dl)
@@ -13,8 +15,9 @@ stph.meld$Bilirubin.mg.dl.MELD <- ifelse(stph.meld$Bilirubin.mg.dl < 1, 1, stph.
 stph.meld$Creatinine.mg.dl.MELD <- ifelse(stph.meld$Creatinine.mg.dl > 4, 4, stph.meld$Creatinine.mg.dl)
 
 # Calculate basic MELD score
-stph.meld$MELD.calc <- 0.378*log(stph.meld$Bilirubin.mg.dl.MELD) +
-  1.120*log(stph.meld$INR) + 0.957*log(stph.meld$Creatinine.mg.dl.MELD) 
+stph.meld$MELD.calc <- 0.378*log(stph.meld$Bilirubin.mg.dl.MELD) + 
+    1.120*log(stph.meld$INR) + 
+    0.957*log(stph.meld$Creatinine.mg.dl.MELD) 
 
 # Round score to the nearest tenth
 stph.meld$MELD.calc <- round(stph.meld$MELD.calc, 1)
@@ -48,8 +51,16 @@ stph.meld$MELD.calc <- ifelse(stph.meld$MELD.calc > 40, 40, stph.meld$MELD.calc)
 stph.meld$MELD.surv <- 0.707^(exp((stph.meld$MELD.calc/10) - 1.127)) 
 stph.meld$MELD.surv2 <- 0.98465^(exp(0.1635*(stph.meld$MELD.calc - 10)))  
 
+# Extract 90-day survival probability from VanDerwerke et al, 2021 
+library(readxl)
+MELD_VanDerwerken <- read_excel("~/IDrive-Sync/Projects/MIMAH/data/MELD_VanDerwerken.xlsx")
+
+for(i in 1:nrow(stph.meld)){
+    stph.meld$MELD_Van[i] <- MELD_VanDerwerken[stph.meld$MELD.calc[i] - 5, ]$SURV
+}
+
 ####
-# Calculate the MELD3.0 score (sex-adjusted version of the MELD)
+# Calculate the MELD 3.0 score (sex-adjusted version of the MELD)
 # Constrain Albumin 
 stph.meld$Albumin.MELD <- ifelse(stph.meld$Albumin < 1.5, 1.5, stph.meld$Albumin)
 stph.meld$Albumin.MELD <- ifelse(stph.meld$Albumin > 3.5, 3.5, stph.meld$Albumin)
@@ -63,8 +74,10 @@ stph.meld$MELD3 <- 1.33*stph.meld$Gender + 4.56*log(stph.meld$Bilirubin.mg.dl.ME
 stph.meld$MELD3 <- round(stph.meld$MELD3, 0)
 stph.meld$MELD3.surv <- 0.946^(exp(0.17698*stph.meld$MELD3 - 3.56))
 
+#############################################
+######### CLIF-C ACLF Score #################
+#############################################
 #####
-# CLIF-C ACLF Score calculations
 # Start by calculating organ-failure sub-scores
 stph.clif$liver.score <- ifelse(stph.clif$Bilirubin.mg.dl < 6, 1, 2)
 stph.clif$liver.score <- ifelse(stph.clif$Bilirubin.mg.dl < 12, stph.clif$liver.score, 3)
@@ -88,8 +101,10 @@ stph.clif$CLIF.OF <- stph.clif$liver.score + stph.clif$kidney.score +
 stph.clif$CLIF.C <- 10*(0.33*stph.clif$CLIF.OF + 0.04*stph.clif$Age + 0.63*log(stph.clif$WBC) - 2)
 stph.clif$CLIF.surv <- exp(-0.0079 * exp(0.0869*stph.clif$CLIF.C))
 
-######
-# Lille score calculations
+#############################################
+################### Lille score #############
+#############################################
+#####
 # First create renal insufficiency dummy
 stph.lille$ren.insuf <- ifelse(stph.lille$Creatinine.mg.dl < 1.3, 0, 1)
 
