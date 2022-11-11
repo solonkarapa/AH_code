@@ -4,44 +4,33 @@ library(ggplot2)
 path_funs <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/funs"
 source(paste0(path_funs, "/calibration_fun.R"))
 
+path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models"
+load(paste0(path_data, "/recalibrated_models_default.Rdata"))
+
 #############################################   
 ############### Calculate calibration  ######
 #############################################   
+# MELD
+cal_MELD.surv <- calibration(test.data$meld.surv.updated,  y = test.data$D90_surv, degree = 1)
+cal_MELD.surv$Score <- "MELD"
 
-# MELD_1 survival function
-cal_MELD.surv <- calibration(stph.meld$MELD.surv, y = stph.meld$D90_surv, degree = 1)
-cal_MELD.surv$Score <- "MELD_1"
-
-# MELD_2 survival function
-cal_MELD.surv2 <- calibration(stph.meld$MELD.surv2, y = stph.meld$D90_surv, degree = 1)
-cal_MELD.surv2$Score <- "MELD_2"
-
-# MELD VanDerwerken 
-cal_MELD.VanDerwerken <- calibration(stph.meld$MELD_Van, y = stph.meld$D90_surv, degree = 1)
-cal_MELD.VanDerwerken$Score <- "MELD VanDerwerken"
-
-# MELD 3.0
-sum(is.na(stph.meld$MELD3.surv)) # 10 missing values due to Albumin.MELD
-cal_MELD3.surv <- calibration(stph.meld$MELD3.surv[!is.na(stph.meld$MELD3.surv)], y = stph.meld$D90_surv[!is.na(stph.meld$MELD3.surv)], degree = 1)
-cal_MELD3.surv$Score <- "MELD 3.0"
-    
 # Lille
-cal_Lille <- calibration(stph.lille$Lille.surv, y = stph.lille$D90_surv, degree = 1)
+cal_Lille <- calibration(test.data$lille.surv.updated, y = test.data$D90_surv, degree = 1)
 cal_Lille$Score <- "Lille"
 
 # CLIF-C ACLF
-cal_CLIF <- calibration(stph.clif$CLIF.surv, y = stph.clif$D90_surv, degree = 1)
+cal_CLIF <- calibration(test.data$clif.surv.updated, y = test.data$D90_surv, degree = 1)
 cal_CLIF$Score <- "CLIF-C ACLF"
 
 # combine dfs
-df_cal <- rbind(cal_MELD.surv, cal_MELD.surv2, cal_MELD.VanDerwerken, cal_MELD3.surv, cal_Lille, cal_CLIF)
+df_cal <- rbind(cal_MELD.surv, cal_Lille, cal_CLIF)
 
 #############################################   
 ###################### Plots  ###############
 ############################################# 
 
 # plot without ribbon and without MELD 3.0
-df_cal %>% filter(Score != "MELD 3.0") %>%
+df_cal %>%
     ggplot(., aes(x = pred, y = obs, col = Score)) +
     geom_line(lwd = 1)  + 
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
@@ -56,7 +45,7 @@ df_cal %>% filter(Score != "MELD 3.0") %>%
     theme_classic() 
 
 # plot with ribbon 
-df_cal %>% filter(Score != "MELD 3.0") %>%
+df_cal %>%
     ggplot(., aes(x = pred, y = obs, col = Score)) +
     geom_line(lwd = 1)  + 
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +

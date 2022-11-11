@@ -3,14 +3,13 @@
 # find recalibration parameters and the survival probability is re-calculated using these parameters. 
 library(rms)
 library(pROC)
-source("val_prob_confidence.R")
 
 # Set random seed
-set.seed(999)
+set.seed(111)
 
 ######
 # Split complete-case sample in training and test observations
-fraction <- 0.8
+fraction <- 0.7
 dt <- sort(sample(nrow(stph.c), nrow(stph.c)*fraction))
 test.data <- stph.c[dt,]
 train.data <- stph.c[-dt,]
@@ -36,8 +35,8 @@ test.data$meld.surv.updated <- 1/(1 + exp(-test.data$updated.meld))
 #############################################
 ################### Lille score #############
 #############################################
-# Run logistic regression and save regression coefficientss
-lille_regr <- glm(D90_surv ~ LILLE, family = binomial, data = train.data)
+# Run logistic regression and save regression coefficients
+lille_regr <- glm(D90_surv ~ LILLE, family = binomial("logit"), data = train.data)
 
 ic_lille_c <- lille_regr$coefficients[1]
 slope_lille_c <- lille_regr$coefficients[2]
@@ -54,7 +53,7 @@ test.data$lille.surv.updated <- 1/(1 + exp(-test.data$updated.lille))
 ######### CLIF-C ACLF Score #################
 #############################################
 # Run logistic regression and save regression coefficients
-clif_regr <- glm(D90_surv ~ CLIF.C, family = binomial, data = train.data)
+clif_regr <- glm(D90_surv ~ CLIF.C, family = binomial("logit"), data = train.data)
 
 ic_clif_c <- clif_regr$coefficients[1]
 slope_clif_c <- clif_regr$coefficients[2]
@@ -68,19 +67,25 @@ test.data$updated.clif <- ic_clif_c + slope_clif_c*test.data$CLIF.C
 test.data$clif.surv.updated <- 1/(1 + exp(-test.data$updated.clif))
 
 ###
-# Confidence intervals/SEs for the slope and intercept
-# val_prob_confidence is used to get SEs for the calibration intercepts and slopes (and CIs in the plots)
-val_prob_confidence(test.data$meld.surv.updated, test.data$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
-                    xlab = "Predicted survival probability", ylab = "Actual survival probability",
-                    legendloc = T, roundstats = 3)
+# # Confidence intervals/SEs for the slope and intercept
+# # val_prob_confidence is used to get SEs for the calibration intercepts and slopes (and CIs in the plots)
+# val_prob_confidence(test.data$meld.surv.updated, test.data$D90_surv, pl = T, smooth = F, logistic.cal = T,
+#                     xlab = "Predicted survival probability", ylab = "Actual survival probability",
+#                     legendloc = T, roundstats = 3)
+# 
+# val_prob_confidence(test.data$clif.surv.updated, test.data$D90_surv, pl = TRUE, smooth = F, logistic.cal = TRUE,
+#                     xlab = "Predicted survival probability", ylab = "Actual survival probability",
+#                     legendloc = T, dostats = TRUE, roundstats = 3)
+# 
+# val_prob_confidence(test.data$lille.surv.updated, test.data$D90_surv, pl = TRUE, smooth = F, logistic.cal = TRUE,
+#                     xlab = "Predicted survival probability", ylab = "Actual survival probability",
+#                     legendloc = T, dostats = TRUE)
+# 
+# library(CalibrationCurves)
+# val.prob.ci.2(test.data$meld.surv.updated, test.data$D90_surv)
 
-val_prob_confidence(test.data$clif.surv.updated, test.data$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
-                    xlab = "Predicted survival probability", ylab = "Actual survival probability",
-                    legendloc = T, dostats = TRUE, roundstats = 3)
-
-val_prob_confidence(test.data$lille.surv.updated, test.data$D90_surv, pl = TRUE, smooth = FALSE, logistic.cal = TRUE,
-                    xlab = "Predicted survival probability", ylab = "Actual survival probability",
-                    legendloc = T, dostats = TRUE)
+#setwd("/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models")
+#save(test.data, train.data, file = "recalibrated_models_default.Rdata")
 
 ######
 # Sensitivity analysis; split data on full stph sample and then select the complete cases per model
