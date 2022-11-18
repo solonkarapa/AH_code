@@ -121,10 +121,16 @@ stph.lille$Lille.surv <- 1 - (exp(-stph.lille$LILLE)/(1 + exp(-stph.lille$LILLE)
 stph.c <- merge(stph.meld, stph.clif, by = "Subject")
 stph.c <- merge(stph.c, stph.lille, by = "Subject")
 
+# 
+#path <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"
+#setwd(path)
+#save(stph.meld, stph.lille, stph.clif, file = "original_models.Rdata")
+#save(stph.c, file = "complete_cases_models.Rdata")
+
 # Tabulate the calculated prognostic scores and survival probabilities
-library(table1)
-table1::table1(~MELD.calc + MELD.surv + MELD.surv2 + MELD3.surv, data = stph.meld)
-table1::table1(~LILLE + Lille.surv, data = stph.lille)
-table1::table1(~CLIF.C + CLIF.surv, data = stph.clif)
+#library(table1)
+#table1::table1(~MELD.calc + MELD.surv + MELD.surv2 + MELD3.surv, data = stph.meld)
+#table1::table1(~LILLE + Lille.surv, data = stph.lille)
+#table1::table1(~CLIF.C + CLIF.surv, data = stph.clif)
 
 

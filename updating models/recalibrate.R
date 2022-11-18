@@ -4,12 +4,16 @@
 library(rms)
 library(pROC)
 
+# load data
+path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"
+load(paste0(path_data, "complete_cases_models.Rdata"))
+
 # Set random seed
 set.seed(111)
 
 ######
 # Split complete-case sample in training and test observations
-fraction <- 0.7
+fraction <- 0.8
 dt <- sort(sample(nrow(stph.c), nrow(stph.c)*fraction))
 test.data <- stph.c[dt,]
 train.data <- stph.c[-dt,]

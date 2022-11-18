@@ -11,15 +11,15 @@ load(paste0(path_data, "/recalibrated_models_default.Rdata"))
 ############### Calculate calibration  ######
 #############################################   
 # MELD
-cal_MELD.surv <- calibration(test.data$meld.surv.updated,  y = test.data$D90_surv, degree = 1)
+cal_MELD.surv <- calibration(test.data$meld.surv.updated, y = test.data$D90_surv)
 cal_MELD.surv$Score <- "MELD"
 
 # Lille
-cal_Lille <- calibration(test.data$lille.surv.updated, y = test.data$D90_surv, degree = 1)
+cal_Lille <- calibration(test.data$lille.surv.updated, y = test.data$D90_surv)
 cal_Lille$Score <- "Lille"
 
 # CLIF-C ACLF
-cal_CLIF <- calibration(test.data$clif.surv.updated, y = test.data$D90_surv, degree = 1)
+cal_CLIF <- calibration(test.data$clif.surv.updated, y = test.data$D90_surv)
 cal_CLIF$Score <- "CLIF-C ACLF"
 
 # combine dfs

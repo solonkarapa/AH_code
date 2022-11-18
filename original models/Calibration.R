@@ -1,36 +1,41 @@
 # This script performs all calculations of model calibration
 library(ggplot2)
 
+# funs
 path_funs <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/funs"
 source(paste0(path_funs, "/calibration_fun.R"))
+
+# data
+path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"
+load(paste0(path_data, "original_models.Rdata"))
 
 #############################################   
 ############### Calculate calibration  ######
 #############################################   
 
 # MELD_1 survival function
-cal_MELD.surv <- calibration(stph.meld$MELD.surv, y = stph.meld$D90_surv, degree = 1)
+cal_MELD.surv <- calibration(stph.meld$MELD.surv, y = stph.meld$D90_surv)
 cal_MELD.surv$Score <- "MELD_1"
 
 # MELD_2 survival function
-cal_MELD.surv2 <- calibration(stph.meld$MELD.surv2, y = stph.meld$D90_surv, degree = 1)
+cal_MELD.surv2 <- calibration(stph.meld$MELD.surv2, y = stph.meld$D90_surv)
 cal_MELD.surv2$Score <- "MELD_2"
 
 # MELD VanDerwerken 
-cal_MELD.VanDerwerken <- calibration(stph.meld$MELD_Van, y = stph.meld$D90_surv, degree = 1)
+cal_MELD.VanDerwerken <- calibration(stph.meld$MELD_Van, y = stph.meld$D90_surv)
 cal_MELD.VanDerwerken$Score <- "MELD VanDerwerken"
 
 # MELD 3.0
 sum(is.na(stph.meld$MELD3.surv)) # 10 missing values due to Albumin.MELD
-cal_MELD3.surv <- calibration(stph.meld$MELD3.surv[!is.na(stph.meld$MELD3.surv)], y = stph.meld$D90_surv[!is.na(stph.meld$MELD3.surv)], degree = 1)
+cal_MELD3.surv <- calibration(stph.meld$MELD3.surv[!is.na(stph.meld$MELD3.surv)], y = stph.meld$D90_surv[!is.na(stph.meld$MELD3.surv)])
 cal_MELD3.surv$Score <- "MELD 3.0"
     
 # Lille
-cal_Lille <- calibration(stph.lille$Lille.surv, y = stph.lille$D90_surv, degree = 1)
+cal_Lille <- calibration(stph.lille$Lille.surv, y = stph.lille$D90_surv)
 cal_Lille$Score <- "Lille"
 
 # CLIF-C ACLF
-cal_CLIF <- calibration(stph.clif$CLIF.surv, y = stph.clif$D90_surv, degree = 1)
+cal_CLIF <- calibration(stph.clif$CLIF.surv, y = stph.clif$D90_surv)
 cal_CLIF$Score <- "CLIF-C ACLF"
 
 # combine dfs

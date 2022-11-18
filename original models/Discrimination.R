@@ -3,7 +3,11 @@
 library(pROC)
 library(dplyr)
 library(ggplot2)
-library(ggROC)
+#library(ggROC)
+
+# data
+path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"
+load(paste0(path_data, "original_models.Rdata"))
 
 #############################################   
 ############### Calculate AUCs  #############
@@ -24,7 +28,6 @@ roc_lille <- roc(stph.lille$D90_DTH, stph.lille$Lille.surv)
 # CLIF-C ACLF
 roc_clif <- roc(stph.clif$D90_DTH, stph.clif$CLIF.surv)
 
-
 # CI
 #auc_meld <- auc(roc_meld)
 #auc_meld_ci <- ci.auc(roc_meld) # Confidence intervals
@@ -37,6 +40,8 @@ roc.list <- list("MELD" = roc_meld,
            "MELD VanDerwerken" = roc_meld.VanDerwerken,
            "CLIF-C ACLF" = roc_clif, 
            "Lille" = roc_lille)
+
+#save(roc.list, file = "ROC_original.Rdata")
 
 g.list <- ggroc(roc.list)
 

@@ -7,11 +7,12 @@ source("dca.R")
 
 ######
 # Comparison of ROC between MELD3.0 and original MELD
-roc_meld_u <- roc(test.meld$D90_surv, test.meld$meld.surv.updated)
-roc_meld3 <- roc(stph.meld$D90_DTH, stph.meld$MELD3.surv)
+#roc_meld_u <- roc(test.meld$D90_surv, test.meld$meld.surv.updated)
+#roc_meld3 <- roc(stph.meld$D90_DTH, stph.meld$MELD3.surv)
 
-roc.test(roc_meld3, roc_meld)
-roc.test(roc_meld3, roc_meld_u)
+#roc.test(roc_meld3, roc_meld)
+#roc.test(roc_meld3, roc_meld_u)
+
 
 ######
 # Sub-group based on sex 

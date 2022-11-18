@@ -6,13 +6,13 @@ library(pROC)
 ######
 # Comparison of areas under the ROC curves
 # MELD
-roc_meld_new <- roc(test.data.c$D90_surv, test.data.c$meld.surv.updated)
-roc_meld_old <- roc(test.data.c$D90_surv, test.data.c$MELD.surv)
+roc_meld_new <- roc(test.data$D90_surv, test.data$meld.surv.updated)
+roc_meld_old <- roc(test.data$D90_surv, test.data$MELD.surv)
 roc.test(roc_meld_old, roc_meld_new) 
 
 # CLIF-C ACLF
-roc_clif_new <- roc(test.data.c$D90_surv, test.data.c$clif.surv.updated)
-roc_clif_old <- roc(test.data.c$D90_surv, test.data.c$CLIF.surv)
+roc_clif_new <- roc(test.data$D90_surv, test.data$clif.surv.updated)
+roc_clif_old <- roc(test.data$D90_surv, test.data$CLIF.surv)
 roc.test(roc_clif_new, roc_clif_old) 
 
 # Lille
