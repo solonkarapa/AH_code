@@ -1,4 +1,7 @@
 
+library(pROC)
+library(ggplot2)
+library(dplyr)
 
 # data original models
 #path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"
@@ -19,11 +22,11 @@ test.y <- test.data[test.data$Age.at.randomisation..calc. < age_cut_off,]
 test.o <- test.data[test.data$Age.at.randomisation..calc. >= age_cut_off,]
 
 # choose age-group to calculate statistics 
-age_group <- "y" # or "o"
+age_group <- "y" # "y" or "o"
 
 if(age_group == "y"){
     dataset <- test.y 
-}else if(sex == "o"){
+}else if(age_group == "o"){
     dataset <- test.o
 }
 

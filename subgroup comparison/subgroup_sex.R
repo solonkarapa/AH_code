@@ -1,4 +1,6 @@
 
+library(pROC)
+
 # data original models
 path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"
 load(paste0(path_data, "original_models.Rdata"))
