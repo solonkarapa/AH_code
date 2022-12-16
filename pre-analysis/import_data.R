@@ -31,6 +31,11 @@ stph.clif <- stph[complete.cases(stph$Bilirubin.mg.dl, stph$Creatinine, stph$INR
 stph.lille <- stph[complete.cases(stph$Bilirubin.day.7, stph$Bilirubin.Merged, stph$Creatinine,
                                   stph$protime, stph$Albumin),]
 
+
+#path <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/pre-analysis/"
+#setwd(path)
+#save(stph, file = "full_sample.Rdata")
+
 # Create table of descriptive statistics and number of missing values per variable
 #library(table1)
 # Some factor variables

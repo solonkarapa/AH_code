@@ -126,6 +126,7 @@ stph.c <- merge(stph.c, stph.lille, by = "Subject")
 #setwd(path)
 #save(stph.meld, stph.lille, stph.clif, file = "original_models.Rdata")
 #save(stph.c, file = "complete_cases_models.Rdata")
+# save(stph, file = "full_sample.Rdata")
 
 # Tabulate the calculated prognostic scores and survival probabilities
 #library(table1)
