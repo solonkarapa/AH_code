@@ -17,21 +17,21 @@ if(model == "meld"){
     model_list <- list("meld_orig" = roc_list_orig$MELD,
                        "meld_update" = roc_list_update$MELD)
     
-    P_value_boot <- roc.test(roc_list_orig$MELD, roc_list_update$MELD) # bootstrap p_value
+    P_value_boot <- roc.test(roc_list_orig$MELD, roc_list_update$MELD, method = "bootstrap") # bootstrap p_value
     
 }else if(model == "lille"){
     #Lille
     model_list <- list("lille_orig" = roc_list_orig$Lille,
                        "lille_update" = roc_list_update$Lille)
    
-    P_value_boot <- roc.test(roc_list_orig$Lille, roc_list_update$Lille)
+    P_value_boot <- roc.test(roc_list_orig$Lille, roc_list_update$Lille, method = "bootstrap")
     
 }else{
     # CLIF 
     model_list <- list("clif_orig" = roc_list_orig$`CLIF-C ACLF`,
                        "clif_update" = roc_list_update$`CLIF-C ACLF`)
     
-    P_value_boot <- roc.test(roc_list_orig$`CLIF-C ACLF`, roc_list_update$`CLIF-C ACLF`)
+    P_value_boot <- roc.test(roc_list_orig$`CLIF-C ACLF`, roc_list_update$`CLIF-C ACLF`, method = "bootstrap")
     
 }
 

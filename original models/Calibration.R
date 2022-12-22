@@ -1,5 +1,6 @@
 # This script performs all calculations of model calibration
 library(ggplot2)
+library(dplyr)
 
 # funs
 path_funs <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/funs"
@@ -73,7 +74,7 @@ df_cal %>% filter(Score != "MELD 3.0") %>%
     coord_equal() +
     xlim(0, 1) + 
     ylim(0, 1) + 
-    ylab("Observed proportion") + 
-    xlab("Predicted probability") + 
+    ylab("Observed survival proportion") + 
+    xlab("Predicted survival probability") + 
     theme_classic() 
 

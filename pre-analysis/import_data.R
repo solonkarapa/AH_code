@@ -37,12 +37,14 @@ stph.lille <- stph[complete.cases(stph$Bilirubin.day.7, stph$Bilirubin.Merged, s
 #save(stph, file = "full_sample.Rdata")
 
 # Create table of descriptive statistics and number of missing values per variable
-#library(table1)
+library(table1)
 # Some factor variables
-#stph$HE_f <- as.factor(stph$HE) 
-#stph$D90_surv_f <- as.factor(stph$D90_surv)
-#stph$Gender_f <- as.factor(stph$Gender)
-#table1::table1(~Bilirubin.mg.dl + Creatinine.mg.dl + Albumin + WBC + protime + 
-#                 INR + HE_f + Bilirubin.day.7 + Gender_f + D90_surv_f + Sodium, data = stph)
+stph$HE_f <- as.factor(stph$HE) 
+stph$D90_surv_f <- as.factor(stph$D90_surv)
+stph$Gender_f <- as.factor(stph$Gender)
+tb1 <- table1::table1(~ Bilirubin.mg.dl + Creatinine.mg.dl + Albumin + WBC + protime + 
+                 INR + HE_f + Bilirubin.day.7 + Gender_f + D90_surv_f + Sodium, data = stph)
 
+library(xtable)
+xtable(as_tibble(tb1))
 

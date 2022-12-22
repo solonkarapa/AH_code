@@ -22,7 +22,7 @@ test.y <- test.data[test.data$Age.at.randomisation..calc. < age_cut_off,]
 test.o <- test.data[test.data$Age.at.randomisation..calc. >= age_cut_off,]
 
 # choose age-group to calculate statistics 
-age_group <- "y" # "y" or "o"
+age_group <- "o" # "y" or "o"
 
 if(age_group == "y"){
     dataset <- test.y 
@@ -84,6 +84,28 @@ ggroc(roc.list) +
     theme_classic() +
     theme(legend.position = "none") 
 
+#############################################   
+###################### AUC  #################
+#############################################
+df_AUC <- as.data.frame(map_dfr(roc.list, ci.auc))
+rownames(df_AUC) <- c("low_CL", "mean", "upper_CL")
+
+df_AUC2 <- tibble::rownames_to_column(df_AUC, var = "AUC")
+
+df3 <- gather(df_AUC2, condition, measurement, `MELD updated`:`Lille updated`, factor_key = TRUE)
+data_wide <- spread(df3, AUC, measurement) %>% arrange(mean)
+
+# reorder factor levels
+data_wide$condition <- fct_reorder(data_wide$condition, data_wide$mean)
+
+ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
+    ggtitle(age_group) +
+    geom_point(lwd = 2)  + 
+    coord_cartesian(xlim = c(0.5, 0.86)) +
+    geom_errorbar(aes(xmin = low_CL, xmax = upper_CL), 
+                  alpha = 1, show.legend = F, lwd = 1, width = 0.5) + 
+    labs(y = "Score", col = "Score", x = "AUC with 95% limits") +
+    theme_classic() 
 
 #### Calibration ###############
 # MELD updated 

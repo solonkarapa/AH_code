@@ -25,7 +25,7 @@ test.males <- test.data[test.data$Gender == 0,]
 test.females <- test.data[test.data$Gender == 1,]
 
 # choose sex to calculate statistics 
-sex <- "f" # or "f
+sex <- "m" # or "f
 
 if(sex == "m"){
     dataset_original <- stph.meld.males 
@@ -91,6 +91,29 @@ ggroc(roc.list) +
     coord_equal() +
     theme_classic() +
     theme(legend.position = "none") 
+
+#############################################   
+###################### AUC  #################
+#############################################
+df_AUC <- as.data.frame(map_dfr(roc.list, ci.auc))
+rownames(df_AUC) <- c("low_CL", "mean", "upper_CL")
+
+df_AUC2 <- tibble::rownames_to_column(df_AUC, var = "AUC")
+
+df3 <- gather(df_AUC2, condition, measurement, `MELD updated`:`Lille updated`, factor_key = TRUE)
+data_wide <- spread(df3, AUC, measurement) %>% arrange(mean)
+
+# reorder factor levels
+data_wide$condition <- fct_reorder(data_wide$condition, data_wide$mean)
+
+ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
+    ggtitle(sex) +
+    geom_point(lwd = 2)  + 
+    coord_cartesian(xlim = c(0.5, 0.86)) +
+    geom_errorbar(aes(xmin = low_CL, xmax = upper_CL), 
+                  alpha = 1, show.legend = F, lwd = 1, width = 0.5) + 
+    labs(y = "Score", col = "Score", x = "AUC with 95% limits") +
+    theme_classic() 
 
 #### Calibration ###############
 # MELD 3.0 - original 

@@ -57,7 +57,7 @@ df_cal %>%
     coord_equal() +
     xlim(0, 1) + 
     ylim(0, 1) + 
-    ylab("Observed proportion") + 
-    xlab("Predicted probability") + 
+    ylab("Observed survival proportion") + 
+    xlab("Predicted survival probability") + 
     theme_classic() 
 

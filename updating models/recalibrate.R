@@ -70,6 +70,24 @@ train.data$clif.surv.updated <- 1/(1 + exp(-train.data$updated.clif))
 test.data$updated.clif <- ic_clif_c + slope_clif_c*test.data$CLIF.C
 test.data$clif.surv.updated <- 1/(1 + exp(-test.data$updated.clif))
 
+#############################################
+######### collect all params ################
+#############################################
+df_meld <- data.frame(intercept = ic_meld_c, slope = slope_meld_c)
+df_meld$Score <- "MELD" 
+
+df_lille <- data.frame(intercept = ic_lille_c, slope = slope_lille_c)
+df_lille$Score <- "Lille" 
+
+df_clif <- data.frame(intercept = ic_clif_c, slope = slope_clif_c)
+df_clif$Score <- "CLIF-C ACLF" 
+
+df <- rbind(df_meld, df_lille, df_clif)
+rownames(df) <- NULL
+
+library(xtable)
+xtable(df[c(3, 1, 2)])
+
 ###
 # # Confidence intervals/SEs for the slope and intercept
 # # val_prob_confidence is used to get SEs for the calibration intercepts and slopes (and CIs in the plots)
