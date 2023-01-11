@@ -15,7 +15,6 @@ load(paste0(path_data2, "original_models.Rdata"))
 
 # Split full sample in training and test observations
 ## make sure to use the same seed and fraction as in recalibrate.R script 
-set.seed(111) # Set random seed
 fraction <- 0.8
 
 #dt <- sort(sample(nrow(stph), nrow(stph) * fraction))
@@ -29,6 +28,7 @@ fraction <- 0.8
 #test.meld <- stph.meld[stph.meld$Subject %in% test.data$Subject,]
 #train.meld <- stph.meld[stph.meld$Subject %in% train.data$Subject,]
 
+set.seed(111) # Set random seed
 dt <- sort(sample(nrow(stph.meld), nrow(stph.meld) * fraction))
 test.meld <- stph.meld[dt,]
 train.meld <- stph.meld[-dt,]
@@ -55,6 +55,7 @@ test.meld$meld.surv.updated <- 1/(1 + exp(-test.meld$updated.meld))
 #test.lille <- stph.lille[stph.lille$Subject %in% test.data$Subject,]
 #train.lille <- stph.lille[stph.lille$Subject %in% train.data$Subject,]
 
+set.seed(111)
 dt <- sort(sample(nrow(stph.lille), nrow(stph.lille) * fraction))
 test.lille <- stph.lille[dt,]
 train.lille <- stph.lille[-dt,]
@@ -81,6 +82,7 @@ test.lille$lille.surv.updated <- 1/(1 + exp(-test.lille$updated.lille))
 #test.clif <- stph.clif[stph.clif$Subject %in% test.data$Subject,]
 #train.clif <- stph.clif[stph.clif$Subject %in% train.data$Subject,]
 
+set.seed(111)
 dt <- sort(sample(nrow(stph.clif), nrow(stph.clif) * fraction))
 test.clif <- stph.clif[dt,]
 train.clif <- stph.clif[-dt,]
@@ -100,6 +102,20 @@ train.clif$clif.surv.updated <- 1/(1 + exp(-train.clif$updated.clif))
 test.clif$updated.clif <- ic_clif + slope_clif*test.clif$CLIF.C
 test.clif$clif.surv.updated <- 1/(1 + exp(-test.clif$updated.clif))
 
-#path_to_save<- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models/"
+# overall sample size per model 
+nrow(stph.meld); nrow(stph.lille); nrow(stph.clif)
+
+# train/test sample size
+model <- c("MELD", "Lille", "CLIF")
+train_size <- c(nrow(train.meld), nrow(train.lille), nrow(train.clif))
+test_size <- c(nrow(test.meld), nrow(test.lille), nrow(test.clif))
+df <- data.frame(model, train_size, test_size)
+df
+
+library(xtable)
+xtable(t(df))
+
+#path_to_save <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models/"
+#setwd(path_to_save)
 #save(test.meld, test.lille, test.clif, file = "recalibrated_models_sens.Rdata")
 

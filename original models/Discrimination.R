@@ -5,6 +5,7 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 library(forcats)
+library(purrr)
 
 # data
 path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"

@@ -6,14 +6,14 @@ library(ggplot2)
 
 # load data
 path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models"
-load(paste0(path_data, "/recalibrated_models_default.Rdata"))
+load(paste0(path_data, "/recalibrated_models_sens.Rdata"))
 
 #############################################   
 ############### Calculate AUCs  #############
 #############################################  
 
 # MELD (survival function 1 and 2 do not matter here)
-roc_meld <- roc(test.data$D90_surv, test.data$meld.surv.updated)
+roc_meld <- roc(test.meld$D90_surv, test.meld$meld.surv.updated)
 
 # MELD 3.0
 #roc_meld3 <- roc(stph.meld$D90_DTH, stph.meld$MELD3.surv)
@@ -22,10 +22,10 @@ roc_meld <- roc(test.data$D90_surv, test.data$meld.surv.updated)
 #roc_meld.VanDerwerken <- roc(stph.meld$D90_DTH, stph.meld$MELD_Van)
 
 # Lille
-roc_lille <- roc(test.data$D90_surv, test.data$lille.surv.updated)
+roc_lille <- roc(test.lille$D90_surv, test.lille$lille.surv.updated)
 
 # CLIF-C ACLF
-roc_clif <- roc(test.data$D90_surv, test.data$clif.surv.updated)
+roc_clif <- roc(test.clif$D90_surv, test.clif$clif.surv.updated)
 
 #############################################   
 ###################### Plots  ###############
@@ -62,6 +62,7 @@ dat.ci.list <- lapply(ci.list, function(ciobj)
 
 df <- plyr::ldply(dat.ci.list, data.frame, .id = "name")
 
+
 pl <- ggroc(roc.list) + 
     facet_grid(. ~ name) +
     theme_minimal() + 
@@ -76,7 +77,6 @@ data_wide$name <- data_wide$condition
 data_wide$low_CL <- round(data_wide$low_CL, 2)
 data_wide$mean <- round(data_wide$mean, 2)
 data_wide$upper_CL <- round(data_wide$upper_CL, 2)
-
 pl + geom_text(data = data_wide, aes(0.05, 0.25, label = paste0("AUC (95% CI): ", mean, " (", low_CL, "-", upper_CL, ")" ), 
                                      hjust = 1), col = "black")
 
@@ -106,6 +106,9 @@ ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
                   alpha = 1, show.legend = F, lwd = 1, width = 0.5) + 
     labs(y = "Score", col = "Score", x = "AUC with 95% limits") +
     theme_classic() 
+
+
+
 
 
 

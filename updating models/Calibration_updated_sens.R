@@ -27,11 +27,11 @@ cal_CLIF$Score <- "CLIF-C ACLF"
 ###################### Plots  ###############
 ############################################# 
 # plot with ribbon 
-cal_MELD.surv %>%
-    ggplot(., aes(x = pred, y = obs, col = Score)) +
-    geom_line(lwd = 1)  + 
+p1 <- cal_MELD.surv %>%
+    ggplot(., aes(x = pred, y = obs)) +
+    geom_line(linewidth = 1)  + 
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-    geom_ribbon(aes(ymin = lower, ymax = upper, fill = Score, linetype = NA),  
+    geom_ribbon(aes(ymin = lower, ymax = upper, linetype = NA),  
                 alpha = 0.3, show.legend = F) + 
     #scale_fill_manual("", values = col) + 
     #scale_color_manual(name = "Score", values = col) + 
@@ -43,11 +43,11 @@ cal_MELD.surv %>%
     xlab("Predicted probability") + 
     theme_classic() 
 
-cal_Lille %>%
-    ggplot(., aes(x = pred, y = obs, col = Score)) +
+p2 <- cal_Lille %>%
+    ggplot(., aes(x = pred, y = obs)) +
     geom_line(lwd = 1)  + 
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-    geom_ribbon(aes(ymin = lower, ymax = upper, fill = Score, linetype = NA),  
+    geom_ribbon(aes(ymin = lower, ymax = upper, linetype = NA),  
                 alpha = 0.3, show.legend = F) + 
     #scale_fill_manual("", values = col) + 
     #scale_color_manual(name = "Score", values = col) + 
@@ -59,11 +59,11 @@ cal_Lille %>%
     xlab("Predicted probability") + 
     theme_classic() 
 
-cal_CLIF %>%
-    ggplot(., aes(x = pred, y = obs, col = Score)) +
+p3 <- cal_CLIF %>%
+    ggplot(., aes(x = pred, y = obs)) +
     geom_line(lwd = 1)  + 
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-    geom_ribbon(aes(ymin = lower, ymax = upper, fill = Score, linetype = NA),  
+    geom_ribbon(aes(ymin = lower, ymax = upper, linetype = NA),  
                 alpha = 0.3, show.legend = F) + 
     #scale_fill_manual("", values = col) + 
     #scale_color_manual(name = "Score", values = col) + 
@@ -75,3 +75,4 @@ cal_CLIF %>%
     xlab("Predicted probability") + 
     theme_classic() 
 
+ggarrange(p1, p2, p3, nrow = 1, ncol = 3, common.legend = TRUE)
