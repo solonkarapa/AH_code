@@ -121,6 +121,7 @@ stph.lille$Lille.surv <- 1 - (exp(-stph.lille$LILLE)/(1 + exp(-stph.lille$LILLE)
 stph.c <- merge(stph.meld, stph.clif, by = "Subject")
 stph.c <- merge(stph.c, stph.lille, by = "Subject")
 
+
 # 
 #path <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"
 #setwd(path)
