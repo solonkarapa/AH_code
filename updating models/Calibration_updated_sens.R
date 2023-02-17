@@ -33,8 +33,11 @@ p1 <- cal_MELD.surv %>%
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
     geom_ribbon(aes(ymin = lower, ymax = upper, linetype = NA),  
                 alpha = 0.3, show.legend = F) + 
+<<<<<<< HEAD
     scale_color_brewer(palette = "Dark2") +
     scale_fill_brewer(palette = "Dark2") +
+=======
+>>>>>>> origin
     #scale_fill_manual("", values = col) + 
     #scale_color_manual(name = "Score", values = col) + 
     facet_grid(. ~ Score) +
@@ -43,7 +46,11 @@ p1 <- cal_MELD.surv %>%
     ylim(0, 1) + 
     ylab("Observed proportion") + 
     xlab("Predicted probability") + 
+<<<<<<< HEAD
     theme_classic2() 
+=======
+    theme_classic() 
+>>>>>>> origin
 
 p2 <- cal_Lille %>%
     ggplot(., aes(x = pred, y = obs)) +
@@ -51,8 +58,11 @@ p2 <- cal_Lille %>%
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
     geom_ribbon(aes(ymin = lower, ymax = upper, linetype = NA),  
                 alpha = 0.3, show.legend = F) + 
+<<<<<<< HEAD
     scale_color_brewer(palette = "Dark2") +
     scale_fill_brewer(palette = "Dark2") +
+=======
+>>>>>>> origin
     #scale_fill_manual("", values = col) + 
     #scale_color_manual(name = "Score", values = col) + 
     facet_grid(. ~ Score) +
@@ -61,7 +71,11 @@ p2 <- cal_Lille %>%
     ylim(0, 1) + 
     ylab("Observed proportion") + 
     xlab("Predicted probability") + 
+<<<<<<< HEAD
     theme_classic2() 
+=======
+    theme_classic() 
+>>>>>>> origin
 
 p3 <- cal_CLIF %>%
     ggplot(., aes(x = pred, y = obs)) +
@@ -69,8 +83,11 @@ p3 <- cal_CLIF %>%
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
     geom_ribbon(aes(ymin = lower, ymax = upper, linetype = NA),  
                 alpha = 0.3, show.legend = F) + 
+<<<<<<< HEAD
     scale_color_brewer(palette = "Dark2") +
     scale_fill_brewer(palette = "Dark2") + 
+=======
+>>>>>>> origin
     #scale_fill_manual("", values = col) + 
     #scale_color_manual(name = "Score", values = col) + 
     facet_grid(. ~ Score) +
@@ -79,6 +96,10 @@ p3 <- cal_CLIF %>%
     ylim(0, 1) + 
     ylab("Observed proportion") + 
     xlab("Predicted probability") + 
+<<<<<<< HEAD
     theme_classic2() 
+=======
+    theme_classic() 
+>>>>>>> origin
 
 ggarrange(p1, p2, p3, nrow = 1, ncol = 3, common.legend = TRUE)

@@ -98,15 +98,23 @@ data_wide <- spread(df3, AUC, measurement) %>% arrange(mean)
 # reorder factor levels
 data_wide$condition <- fct_reorder(data_wide$condition, data_wide$mean)
 
+<<<<<<< HEAD
 p_auc_young <- ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
     #ggtitle(age_group) +
+=======
+ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
+    ggtitle(age_group) +
+>>>>>>> origin
     geom_point(lwd = 2)  + 
     coord_cartesian(xlim = c(0.5, 0.86)) +
     geom_errorbar(aes(xmin = low_CL, xmax = upper_CL), 
                   alpha = 1, show.legend = F, lwd = 1, width = 0.5) + 
     labs(y = "Score", col = "Score", x = "AUC with 95% limits") +
+<<<<<<< HEAD
     scale_color_brewer(palette = "Dark2") +
     scale_fill_brewer(palette = "Dark2") + 
+=======
+>>>>>>> origin
     theme_classic() 
 
 #### Calibration ###############
@@ -123,8 +131,11 @@ cal_lille$Score <- "Lille updated"
 # combine dfs
 df_cal <- rbind(cal_meld, cal_clif, cal_lille)
 
+<<<<<<< HEAD
 df_cal$Score <- factor(df_cal$Score, labels = levels(data_wide$condition))
 
+=======
+>>>>>>> origin
 # plot without ribbon 
 df_cal %>%
     ggplot(., aes(x = pred, y = obs, col = Score)) +
@@ -142,9 +153,15 @@ df_cal %>%
     theme_classic() 
 
 # plot with ribbon 
+<<<<<<< HEAD
 p_calibration_young <- df_cal %>%
     ggplot(., aes(x = pred, y = obs, col = Score)) +
     #ggtitle(paste0("age_group ", age_group)) +
+=======
+df_cal %>%
+    ggplot(., aes(x = pred, y = obs, col = Score)) +
+    ggtitle(paste0("age_group ", age_group)) +
+>>>>>>> origin
     geom_line(lwd = 1)  + 
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
     geom_ribbon(aes(ymin = lower, ymax = upper, fill = Score, linetype = NA),  
@@ -155,6 +172,7 @@ p_calibration_young <- df_cal %>%
     coord_equal() +
     xlim(0, 1) + 
     ylim(0, 1) + 
+<<<<<<< HEAD
     scale_color_brewer(palette = "Dark2") +
     scale_fill_brewer(palette = "Dark2") + 
     ylab("Observed survival proportion") + 
@@ -167,3 +185,9 @@ source("/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/grid_arrange_fun.R")
 library(gtable)
 p1 <- grid_arrange_shared_legend(p_auc_young, p_calibration_young)
 p2 <- grid_arrange_shared_legend(p_auc_old, p_calibration_old)
+=======
+    ylab("Observed proportion") + 
+    xlab("Predicted probability") + 
+    theme_classic() 
+
+>>>>>>> origin

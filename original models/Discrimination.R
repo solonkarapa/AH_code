@@ -33,10 +33,17 @@ roc_clif <- roc(stph.clif$D90_DTH, stph.clif$CLIF.surv)
 #############################################   
 ###################### Plots  ###############
 ############################################# 
+<<<<<<< HEAD
 roc.list <- list("CLIF-C ACLF" = roc_clif,
                  "Lille" = roc_lille,
                  "MELD" = roc_meld, 
                  "MELD VanDerwerken" = roc_meld.VanDerwerken)
+=======
+roc.list <- list("MELD" = roc_meld, 
+           "MELD VanDerwerken" = roc_meld.VanDerwerken,
+           "CLIF-C ACLF" = roc_clif, 
+           "Lille" = roc_lille)
+>>>>>>> origin
 
 #save(roc.list, file = "ROC_original.Rdata")
 
@@ -66,8 +73,20 @@ dat.ci.list <- lapply(ci.list, function(ciobj)
 
 df <- plyr::ldply(dat.ci.list, data.frame, .id = "name")
 
+<<<<<<< HEAD
 # rorder based on AUC scores
 #df_cal$Score <- factor(df_cal$Score, labels = levels(data_wide$condition))
+=======
+ggroc(roc.list) + 
+    facet_grid(. ~ name) +
+    theme_minimal() + 
+    geom_ribbon(data = df, aes(x = x, ymin = lower, ymax = upper, fill = name), alpha = 0.3, inherit.aes = F) +
+    geom_abline(slope = 1, intercept = 1, linetype = "dashed") + 
+    labs(x = "Specificity", y = "Sensitivity") + 
+    coord_equal() +
+    theme_classic() +
+    theme(legend.position = "none") 
+>>>>>>> origin
 
 # To have all the curves of the same color, use aes="group":
 #g.group <- ggroc(roc.list, aes="group")
@@ -87,18 +106,27 @@ rownames(df_AUC) <- c("low_CL", "mean", "upper_CL")
 
 df_AUC2 <- tibble::rownames_to_column(df_AUC, var = "AUC")
 
+<<<<<<< HEAD
 df3 <- gather(df_AUC2, condition, measurement, `CLIF-C ACLF`:`MELD VanDerwerken`, factor_key = TRUE)
+=======
+df3 <- gather(df_AUC2, condition, measurement, MELD:Lille, factor_key = TRUE)
+>>>>>>> origin
 data_wide <- spread(df3, AUC, measurement) %>% arrange(mean)
 
 # reorder factor levels
 data_wide$condition <- fct_reorder(data_wide$condition, data_wide$mean)
 
+<<<<<<< HEAD
 p_auc <- ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
+=======
+ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
+>>>>>>> origin
     geom_point(lwd = 2)  + 
     coord_cartesian(xlim = c(0.5, 0.86)) +
     geom_errorbar(aes(xmin = low_CL, xmax = upper_CL), 
                   alpha = 1, show.legend = F, lwd = 1, width = 0.5) + 
     labs(y = "Score", col = "Score", x = "AUC with 95% limits") +
+<<<<<<< HEAD
     scale_color_brewer(palette = "Dark2") +
     scale_fill_brewer(palette = "Dark2") +
     theme_classic2() +
@@ -126,3 +154,57 @@ p_roc + geom_text(data = data_wide,
                                      hjust = 1), col = "black")
 
 
+=======
+    theme_classic() 
+
+
+#####
+# Formally compare the c-statistics across models using bootstrap method
+compareroc.mc <- roc.test(roc_clif, roc_meld) # comparison between MELD and CLIF
+compareroc.ml <- roc.test(roc_meld, roc_lille) # comparison between MELD and Lille
+compareroc.cl <- roc.test(roc_clif, roc_lille) # comparison between CLIF and Lille
+
+# Tabulate the p-values
+roc_pvalues <- c(compareroc.mc$p.value, compareroc.ml$p.value, compareroc.cl$p.value)
+names(roc_pvalues) <- c("p-value MELD-CLIF", "p-value MELD-Lille", "p-value CLIF-Lille")
+roc_pvalues
+
+#####
+# # NRI calculations
+# library(nricens)
+# 
+# # Define events and probability vectors
+# event <- stph.c$D90_surv
+# p.MELD <- stph.c$MELD.surv
+# p.MELD2 <- stph.c$MELD.surv2
+# p.LILLE <- stph.c$Lille.surv
+# p.CLIF <- stph.c$CLIF.surv
+# 
+# # Define cut-off points
+# cut_lille <- 1 - (exp(-0.45)/(1 + exp(-0.45))) 
+# cut_meld <- 0.707^(exp(2.5 - 1.127)) 
+# cut_meld2 <- 0.98465^(exp(0.1635*(25 - 10)))  
+# cut_clif <- exp(-0.0079 * exp(0.0869*51))
+# 
+# # Calculate NRI for all models
+# # MELD_1 and Lille
+# NRI_ML <- nribin(event = event, p.std = p.MELD, p.new = p.LILLE, cut = cut_meld, niter = 0, updown = 'category')
+# # MELD_2 and Lille
+# NRI_M2L <- nribin(event = event, p.std = p.MELD2, p.new = p.LILLE, cut = cut_meld2, niter = 0, updown = 'category')
+# # CLIF-C ACLF and Lille
+# NRI_CL <- nribin(event = event, p.std = p.CLIF, p.new = p.LILLE, cut = cut_clif, niter = 0, updown = 'category')
+# # MELD_1 and CLIF-C ACLF
+# NRI_MC <- nribin(event = event, p.std = p.MELD, p.new = p.CLIF, cut = cut_meld, niter = 0, updown = 'category')
+# # MELD_2 and CLIF-C ACLF
+# NRI_M2C <- nribin(event = event, p.std = p.MELD2, p.new = p.CLIF, cut = cut_meld2, niter = 0, updown = 'category')
+# # Lille and MELD_1
+# NRI_LM <- nribin(event = event, p.std = p.LILLE, p.new = p.MELD, cut = cut_lille, niter = 0, updown = 'category')
+# # Lille and MELD_2
+# NRI_LM2 <- nribin(event = event, p.std = p.LILLE, p.new = p.MELD2, cut = cut_lille, niter = 0, updown = 'category')
+# # Lille and CLIF-C ACLf
+# NRI_LC <- nribin(event = event, p.std = p.LILLE, p.new = p.CLIF, cut = cut_lille, niter = 0, updown = 'category')
+# # CLIF-C ACLF and MELD_1
+# NRI_CM <- nribin(event = event, p.std = p.CLIF, p.new = p.MELD, cut = cut_clif, niter = 0, updown = 'category')
+# # CLIF-C ACLF and MELD_2
+# NRI_CM2 <- nribin(event = event, p.std = p.CLIF, p.new = p.MELD2, cut = cut_clif, niter = 0, updown = 'category')
+>>>>>>> origin

@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin
 library(dplyr)
 library(ggplot2)
 library(ggpubr)
@@ -9,7 +13,10 @@ library(purrr)
 path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models"
 load(paste0(path_data, "/recalibrated_models_default.Rdata"))
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin
 # subset data
 data <- test.data %>% 
     select(Subject, meld.surv.updated, lille.surv.updated, clif.surv.updated, D90_surv)
@@ -17,7 +24,10 @@ data <- test.data %>%
 #############################################   
 ################ Correlation  ###############
 ############################################# 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin
 #ggplot(data, aes(x = meld.surv.updated, y = lille.surv.updated)) +
 #    geom_point() +
 #    geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
@@ -28,7 +38,11 @@ ggscatter(data, x = "meld.surv.updated", y = "lille.surv.updated",
           cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = c(0.10, 0.9)) + 
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
     labs(x = "MELD survival probability ", y = "Lille survival probability")
+<<<<<<< HEAD
 coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+=======
+    coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+>>>>>>> origin
     theme_classic()
 
 ggscatter(data, x = "meld.surv.updated", y = "clif.surv.updated",
@@ -36,7 +50,11 @@ ggscatter(data, x = "meld.surv.updated", y = "clif.surv.updated",
           cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = c(0.10, 0.9)) + 
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
     labs(x = "MELD survival probability", y = "CLIF-C ACLF survival probability ")
+<<<<<<< HEAD
 coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+=======
+    coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+>>>>>>> origin
     theme_classic()
 
 ggscatter(data, x = "lille.surv.updated", y = "clif.surv.updated",
@@ -44,7 +62,11 @@ ggscatter(data, x = "lille.surv.updated", y = "clif.surv.updated",
           cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = c(0.10, 0.9)) + 
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
     labs(x = "Lille survival probability ", y = "CLIF-C ACLF survival probability ")
+<<<<<<< HEAD
 coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+=======
+    coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+>>>>>>> origin
     theme_classic()
 
 #############################################   
@@ -161,7 +183,11 @@ sum_df %>% filter(!(variable %in% vars_to_remove)) %>%
 #    mutate(Group = ifelse(Subject %in% data_long3$Subject, 1, 0)) %>% 
 #    select(Group, vars) %>%
 #    group_by(Group) 
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> origin
 # chisq.test
 #https://data-flair.training/blogs/chi-square-test-in-r/#:~:text=Chi%2DSquare%20test%20in%20R%20is%20a%20statistical%20method%20which,Green%2C%20Yes%2FNo%20etc.
 #test <- chisq.test(table(df$CLIF.OF, df$Group), simulate.p.value = TRUE)
@@ -265,4 +291,10 @@ sum_df %>% filter(!(variable %in% vars_to_remove)) %>%
 # roc_lille
 # # CLIF-C ACLF
 # roc_clif <- roc(data_wide$D90_surv, data_wide$clif.surv.updated)
+<<<<<<< HEAD
 # roc_clif
+=======
+# roc_clif
+
+
+>>>>>>> origin

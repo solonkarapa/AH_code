@@ -1,6 +1,9 @@
 
 library(pROC)
+<<<<<<< HEAD
 library(survminer) # for plotting theme
+=======
+>>>>>>> origin
 
 # data original models
 path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"
@@ -26,7 +29,11 @@ test.males <- test.data[test.data$Gender == 0,]
 test.females <- test.data[test.data$Gender == 1,]
 
 # choose sex to calculate statistics 
+<<<<<<< HEAD
 sex <- "f" # or "f
+=======
+sex <- "m" # or "f
+>>>>>>> origin
 
 if(sex == "m"){
     dataset_original <- stph.meld.males 
@@ -69,9 +76,13 @@ g.list +
     ggtitle(sex) +
     geom_line(lwd = 1) + 
     geom_abline(slope = 1, intercept = 1, linetype = "dashed") +
+<<<<<<< HEAD
     theme_classic2() + 
     scale_color_brewer(palette = "Dark2") +
     scale_fill_brewer(palette = "Dark2") + 
+=======
+    theme_classic() + 
+>>>>>>> origin
     theme(legend.position="none") 
 
 # add confidence bands
@@ -109,17 +120,26 @@ data_wide <- spread(df3, AUC, measurement) %>% arrange(mean)
 # reorder factor levels
 data_wide$condition <- fct_reorder(data_wide$condition, data_wide$mean)
 
+<<<<<<< HEAD
 p_auc_females <- ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
     #ggtitle(sex) +
+=======
+ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
+    ggtitle(sex) +
+>>>>>>> origin
     geom_point(lwd = 2)  + 
     coord_cartesian(xlim = c(0.5, 0.86)) +
     geom_errorbar(aes(xmin = low_CL, xmax = upper_CL), 
                   alpha = 1, show.legend = F, lwd = 1, width = 0.5) + 
     labs(y = "Score", col = "Score", x = "AUC with 95% limits") +
+<<<<<<< HEAD
     scale_color_brewer(palette = "Dark2") +
     scale_fill_brewer(palette = "Dark2") + 
     theme_classic2() +
     theme(legend.position = "none") 
+=======
+    theme_classic() 
+>>>>>>> origin
 
 #### Calibration ###############
 # MELD 3.0 - original 
@@ -138,8 +158,11 @@ cal_lille$Score <- "Lille updated"
 # combine dfs
 df_cal <- rbind(cal_meld3, cal_meld, cal_clif, cal_lille)
 
+<<<<<<< HEAD
 df_cal$Score <- factor(df_cal$Score, labels = levels(data_wide$condition))
 
+=======
+>>>>>>> origin
 # plot without ribbon 
 df_cal %>%
     ggplot(., aes(x = pred, y = obs, col = Score)) +
@@ -154,6 +177,7 @@ df_cal %>%
     ylim(0, 1) + 
     ylab("Observed proportion") + 
     xlab("Predicted probability") + 
+<<<<<<< HEAD
     scale_color_brewer(palette = "Dark2") +
     scale_fill_brewer(palette = "Dark2") + 
     theme_classic() 
@@ -183,5 +207,26 @@ source("/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/grid_arrange_fun.R")
 library(gtable)
 p1 <- grid_arrange_shared_legend(p_auc_males, p_calibration_males)
 p2 <- grid_arrange_shared_legend(p_auc_females, p_calibration_females)
+=======
+    theme_classic() 
+
+# plot with ribbon 
+df_cal %>%
+    ggplot(., aes(x = pred, y = obs, col = Score)) +
+    ggtitle(sex) +
+    geom_line(lwd = 1)  + 
+    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+    geom_ribbon(aes(ymin = lower, ymax = upper, fill = Score, linetype = NA),  
+                alpha = 0.3, show.legend = F) + 
+    #scale_fill_manual("", values = col) + 
+    #scale_color_manual(name = "Score", values = col) + 
+    facet_grid(. ~ Score) +
+    coord_equal() +
+    xlim(0, 1) + 
+    ylim(0, 1) + 
+    ylab("Observed proportion") + 
+    xlab("Predicted probability") + 
+    theme_classic() 
+>>>>>>> origin
 
 

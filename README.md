@@ -23,6 +23,9 @@ The repository contains several folders, with the following files in them:
      - subgroup_comparison.R. File that is used to analyse model performance in sub-groups of patients. 
 
 In order to perform the analysis, the files import_data.R and prognostic_scores.R should always be run first. Generally, files may only work after another file is run first. As the data is not published, however, I would recommend using this code as a guideline for comparable analyses, rather than as a perfect example of how model validations and comparisons should always be done. 
+<<<<<<< HEAD
 
 ---- 
+=======
+>>>>>>> origin
     
