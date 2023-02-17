@@ -1,22 +1,16 @@
-<<<<<<< HEAD
-=======
 
->>>>>>> origin
 library(dplyr)
 library(ggplot2)
 library(ggpubr)
 library(tidyr)
 library(forcats)
 library(purrr)
+library(survminer)
 
 ### data 
 path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models"
 load(paste0(path_data, "/recalibrated_models_default.Rdata"))
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin
 # subset data
 data <- test.data %>% 
     select(Subject, meld.surv.updated, lille.surv.updated, clif.surv.updated, D90_surv)
@@ -24,10 +18,7 @@ data <- test.data %>%
 #############################################   
 ################ Correlation  ###############
 ############################################# 
-<<<<<<< HEAD
 
-=======
->>>>>>> origin
 #ggplot(data, aes(x = meld.surv.updated, y = lille.surv.updated)) +
 #    geom_point() +
 #    geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
@@ -37,37 +28,25 @@ ggscatter(data, x = "meld.surv.updated", y = "lille.surv.updated",
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = c(0.10, 0.9)) + 
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
-    labs(x = "MELD survival probability ", y = "Lille survival probability")
-<<<<<<< HEAD
-coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
-=======
+    labs(x = "MELD survival probability ", y = "Lille survival probability") +
     coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
->>>>>>> origin
-    theme_classic()
+    theme_classic2()
 
 ggscatter(data, x = "meld.surv.updated", y = "clif.surv.updated",
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = c(0.10, 0.9)) + 
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
-    labs(x = "MELD survival probability", y = "CLIF-C ACLF survival probability ")
-<<<<<<< HEAD
-coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
-=======
+    labs(x = "MELD survival probability", y = "CLIF-C ACLF survival probability ") +
     coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
->>>>>>> origin
-    theme_classic()
+    theme_classic2()
 
 ggscatter(data, x = "lille.surv.updated", y = "clif.surv.updated",
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = c(0.10, 0.9)) + 
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
-    labs(x = "Lille survival probability ", y = "CLIF-C ACLF survival probability ")
-<<<<<<< HEAD
-coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
-=======
+    labs(x = "Lille survival probability ", y = "CLIF-C ACLF survival probability ") +
     coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
->>>>>>> origin
-    theme_classic()
+    theme_classic2()
 
 #############################################   
 ################ Correlation  ###############
