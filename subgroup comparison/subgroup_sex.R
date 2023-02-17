@@ -1,5 +1,6 @@
 
 library(pROC)
+library(survminer) # for plotting theme
 
 # data original models
 path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"
@@ -25,7 +26,7 @@ test.males <- test.data[test.data$Gender == 0,]
 test.females <- test.data[test.data$Gender == 1,]
 
 # choose sex to calculate statistics 
-sex <- "m" # or "f
+sex <- "f" # or "f
 
 if(sex == "m"){
     dataset_original <- stph.meld.males 
@@ -68,7 +69,9 @@ g.list +
     ggtitle(sex) +
     geom_line(lwd = 1) + 
     geom_abline(slope = 1, intercept = 1, linetype = "dashed") +
-    theme_classic() + 
+    theme_classic2() + 
+    scale_color_brewer(palette = "Dark2") +
+    scale_fill_brewer(palette = "Dark2") + 
     theme(legend.position="none") 
 
 # add confidence bands
@@ -106,14 +109,17 @@ data_wide <- spread(df3, AUC, measurement) %>% arrange(mean)
 # reorder factor levels
 data_wide$condition <- fct_reorder(data_wide$condition, data_wide$mean)
 
-ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
-    ggtitle(sex) +
+p_auc_females <- ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
+    #ggtitle(sex) +
     geom_point(lwd = 2)  + 
     coord_cartesian(xlim = c(0.5, 0.86)) +
     geom_errorbar(aes(xmin = low_CL, xmax = upper_CL), 
                   alpha = 1, show.legend = F, lwd = 1, width = 0.5) + 
     labs(y = "Score", col = "Score", x = "AUC with 95% limits") +
-    theme_classic() 
+    scale_color_brewer(palette = "Dark2") +
+    scale_fill_brewer(palette = "Dark2") + 
+    theme_classic2() +
+    theme(legend.position = "none") 
 
 #### Calibration ###############
 # MELD 3.0 - original 
@@ -132,6 +138,8 @@ cal_lille$Score <- "Lille updated"
 # combine dfs
 df_cal <- rbind(cal_meld3, cal_meld, cal_clif, cal_lille)
 
+df_cal$Score <- factor(df_cal$Score, labels = levels(data_wide$condition))
+
 # plot without ribbon 
 df_cal %>%
     ggplot(., aes(x = pred, y = obs, col = Score)) +
@@ -146,24 +154,34 @@ df_cal %>%
     ylim(0, 1) + 
     ylab("Observed proportion") + 
     xlab("Predicted probability") + 
+    scale_color_brewer(palette = "Dark2") +
+    scale_fill_brewer(palette = "Dark2") + 
     theme_classic() 
 
 # plot with ribbon 
-df_cal %>%
-    ggplot(., aes(x = pred, y = obs, col = Score)) +
-    ggtitle(sex) +
-    geom_line(lwd = 1)  + 
-    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-    geom_ribbon(aes(ymin = lower, ymax = upper, fill = Score, linetype = NA),  
-                alpha = 0.3, show.legend = F) + 
-    #scale_fill_manual("", values = col) + 
-    #scale_color_manual(name = "Score", values = col) + 
-    facet_grid(. ~ Score) +
-    coord_equal() +
-    xlim(0, 1) + 
-    ylim(0, 1) + 
-    ylab("Observed proportion") + 
-    xlab("Predicted probability") + 
-    theme_classic() 
+p_calibration_females <- df_cal %>%
+        ggplot(., aes(x = pred, y = obs, col = Score)) +
+        #ggtitle(sex) +
+        geom_line(lwd = 1)  + 
+        geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+        geom_ribbon(aes(ymin = lower, ymax = upper, fill = Score, linetype = NA),  
+                    alpha = 0.3, show.legend = F) + 
+        #scale_fill_manual("", values = col) + 
+        #scale_color_manual(name = "Score", values = col) + 
+        facet_grid(. ~ Score) +
+        coord_equal() +
+        xlim(0, 1) + 
+        ylim(0, 1) + 
+        scale_color_brewer(palette = "Dark2") +
+        scale_fill_brewer(palette = "Dark2") + 
+        ylab("Observed survival proportion") + 
+        xlab("Predicted survival probability") + 
+        theme_classic() 
+
+# 
+source("/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/grid_arrange_fun.R")
+library(gtable)
+p1 <- grid_arrange_shared_legend(p_auc_males, p_calibration_males)
+p2 <- grid_arrange_shared_legend(p_auc_females, p_calibration_females)
 
 

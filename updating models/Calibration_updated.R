@@ -1,5 +1,6 @@
 # This script performs all calculations of model calibration
 library(ggplot2)
+library(survminer) # for plotting theme
 
 path_funs <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/funs"
 source(paste0(path_funs, "/calibration_fun.R"))
@@ -51,6 +52,8 @@ df_cal %>%
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
     geom_ribbon(aes(ymin = lower, ymax = upper, fill = Score, linetype = NA),  
                 alpha = 0.3, show.legend = F) + 
+    scale_color_brewer(palette = "Dark2") +
+    scale_fill_brewer(palette = "Dark2") +
     #scale_fill_manual("", values = col) + 
     #scale_color_manual(name = "Score", values = col) + 
     facet_grid(. ~ Score) +
@@ -59,5 +62,5 @@ df_cal %>%
     ylim(0, 1) + 
     ylab("Observed survival proportion") + 
     xlab("Predicted survival probability") + 
-    theme_classic() 
-
+    theme_classic2() 
+ 
