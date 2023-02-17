@@ -125,14 +125,4 @@ p_roc + geom_text(data = data_wide,
                   aes(0.02, 0.15, label = paste0("AUC (95% CI): ", mean, " (", low_CL, "-", upper_CL, ")" ), 
                                      hjust = 1), col = "black")
 
-#####
-# Formally compare the c-statistics across models using bootstrap method
-# compareroc.mc <- roc.test(roc_clif, roc_meld) # comparison between MELD and CLIF
-# compareroc.ml <- roc.test(roc_meld, roc_lille) # comparison between MELD and Lille
-# compareroc.cl <- roc.test(roc_clif, roc_lille) # comparison between CLIF and Lille
-# 
-# # Tabulate the p-values
-# roc_pvalues <- c(compareroc.mc$p.value, compareroc.ml$p.value, compareroc.cl$p.value)
-# names(roc_pvalues) <- c("p-value MELD-CLIF", "p-value MELD-Lille", "p-value CLIF-Lille")
-# roc_pvalues
 
