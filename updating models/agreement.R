@@ -9,6 +9,7 @@ library(purrr)
 path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models"
 load(paste0(path_data, "/recalibrated_models_default.Rdata"))
 
+
 # subset data
 data <- test.data %>% 
     select(Subject, meld.surv.updated, lille.surv.updated, clif.surv.updated, D90_surv)
