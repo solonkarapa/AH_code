@@ -125,7 +125,6 @@ p_roc + geom_text(data = data_wide,
                   aes(0.02, 0.15, label = paste0("AUC (95% CI): ", mean, " (", low_CL, "-", upper_CL, ")" ), 
                                      hjust = 1), col = "black")
 
-
 #####
 # Formally compare the c-statistics across models using bootstrap method
 # compareroc.mc <- roc.test(roc_clif, roc_meld) # comparison between MELD and CLIF
