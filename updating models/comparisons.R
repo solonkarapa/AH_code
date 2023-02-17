@@ -1,5 +1,5 @@
 
-library("ggsci")  # for color palette
+library(ggsci)  # for color palette
 library(grid)
 library(gridExtra)
 
