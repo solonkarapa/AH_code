@@ -17,6 +17,7 @@ data <- test.data %>%
 #############################################   
 ################ Correlation  ###############
 ############################################# 
+
 #ggplot(data, aes(x = meld.surv.updated, y = lille.surv.updated)) +
 #    geom_point() +
 #    geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
