@@ -19,39 +19,42 @@ data <- test.data %>%
 ################ Correlation  ###############
 ############################################# 
 
-#ggplot(data, aes(x = meld.surv.updated, y = lille.surv.updated)) +
-#    geom_point() +
-#    geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
-#    coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) 
+coords <- c(0.01, 1)
 
-ggscatter(data, x = "meld.surv.updated", y = "lille.surv.updated",
-          add = "reg.line", conf.int = TRUE, 
-          cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = c(0.10, 0.9)) + 
+p1 <- ggscatter(data, x = "meld.surv.updated", y = "lille.surv.updated",
+                add = "reg.line", conf.int = TRUE, 
+                cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = coords,
+                color = "grey", alpha = 0.7,
+                add.params = list(color = "purple2")) + 
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
-    labs(x = "MELD survival probability ", y = "Lille survival probability") +
+    labs(x = "MELD", y = "Lille") +
     coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
     theme_classic2()
 
-ggscatter(data, x = "meld.surv.updated", y = "clif.surv.updated",
+p2 <- ggscatter(data, x = "meld.surv.updated", y = "clif.surv.updated",
           add = "reg.line", conf.int = TRUE, 
-          cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = c(0.10, 0.9)) + 
+          cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = coords,
+          color = "grey", alpha = 0.7,
+          add.params = list(color = "purple2")) + 
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
-    labs(x = "MELD survival probability", y = "CLIF-C ACLF survival probability ") +
+    labs(x = "MELD", y = "CLIF-C ACLF") +
     coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
     theme_classic2()
 
-ggscatter(data, x = "lille.surv.updated", y = "clif.surv.updated",
+p3 <- ggscatter(data, x = "lille.surv.updated", y = "clif.surv.updated",
           add = "reg.line", conf.int = TRUE, 
-          cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = c(0.10, 0.9)) + 
+          cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = coords,
+          color = "grey", alpha = 0.7,
+          add.params = list(color = "purple2")) + 
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
-    labs(x = "Lille survival probability ", y = "CLIF-C ACLF survival probability ") +
+    labs(x = "Lille", y = "CLIF-C ACLF") +
     coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
     theme_classic2()
 
 #############################################   
 ################ Correlation  ###############
 #############################################
-# logn format
+# long format
 data_long <- gather(data, model, probs, meld.surv.updated:clif.surv.updated, factor_key = TRUE)
 
 data_long2 <- data_long %>% 
@@ -61,15 +64,16 @@ data_long2 <- data_long %>%
            max_min_dev = max(probs) - min(probs)) # range 
 
 # plot
-data_long2 %>% 
-    mutate(Subject = fct_reorder(as.factor(Subject), desc(max_min_dev))) %>%
-    ggplot(., aes(x = max_min_dev, y = reorder(Subject, max_min_dev))) +
-    geom_point(alpha = 0.5) +
-    labs(x = "Probabilities range", y = "Subject") +
-    theme_classic() +
+p4 <- data_long2 %>% 
+    #mutate(Subject = fct_reorder(as.factor(Subject), desc(max_min_dev))) %>%
+    ggplot(.) +
+    geom_point(aes(x = max_min_dev, y = reorder(Subject, max_min_dev))) +
+    labs(x = "Range probabilities ", y = "Subject") +
+    theme_classic2() +
     theme(axis.text.y = element_blank(),
           axis.ticks.y = element_blank())
 
+p4
 
 # overall survival rate
 data_long2 %>% ungroup() %>% summarise(mean(D90_surv))
@@ -98,12 +102,15 @@ thresholds <- seq(0, 0.5, by = 0.01)
 res <- map_df(thresholds, cut_off_surv_rate, data = data_long2, var_name = D90_surv)
 
 # plot
-ggplot(res, aes(y = surv_rate, x = thres, label = n)) +
+ind <- c(1, 5, 9, 13, 25, 41, 49) # select a subset to visualise
+p5 <- ggplot(res, aes(y = surv_rate, x = thres)) +
     geom_point() +
     geom_line() + 
-    geom_text(check_overlap = TRUE, nudge_y = 0.02) +
-    labs(x = "Probabilities range", y = "Survival Rate") +
-    theme_classic()
+    geom_text(data = res[ind, ], aes(label = n),check_overlap = TRUE, nudge_y = 0.04, nudge_x = 0.015) +
+    labs(x = "Range probabilities", y = "Survival Rate") +
+    theme_classic2()
+
+p5
 
 # fun 
 sum_fun <- function(df1, df2, thres){
@@ -134,146 +141,41 @@ sum_df <- res %>%
 
 vars_to_keep <- c("CLIF.OF")
 
-sum_df %>% filter(variable %in% vars_to_keep) %>%
+p6 <- sum_df %>% filter(variable %in% vars_to_keep) %>%
     ggplot(., aes(x = threshold, y = value)) +
     geom_point() +
     geom_line() +
     facet_wrap(. ~ variable, scales = "free_y") +
-    labs(x = "Probabilities range") +
-    theme_bw()
+    labs(x = "Range probabilities", y = "") +
+    theme_classic2() +
+    theme(strip.background = element_blank())
 
+p6
 
 vars_to_remove <- c("Gender.x", "Age.at.randomisation..calc..x", 
                     "liver.score", "kidney.score", "brain.score", "coag.score",
                     "circ.score", 
                     "protime", "delta.bili")
 
+#library(gridExtra)
+ggarrange(p1, p2, p3, p4, p5, p6, nrow = 2, ncol = 3, labels = "auto", align = "hv")
+
+#################
+#################
+#################
+
 sum_df %>% filter(!(variable %in% vars_to_remove)) %>%
+    filter(!variable %in% "CLIF.OF") %>%
+    mutate(variable = case_when(variable == "Bilirubin.mg.dl" ~ "Bilirubin (mg/dL)",
+                                variable == "Bilirubin.day.7" ~ "Bilirubin (day 7)",
+                                variable == "Creatinine.mg.dl" ~ "Creatinine (mg/dL)", 
+                                TRUE ~ variable)) %>%
     ggplot(., aes(x = threshold, y = value)) +
     geom_point() +
     geom_line() +
     facet_wrap(. ~ variable, scales = "free_y") +
-    labs(x = "Probabilities range") +
-    theme_bw()
-
+    labs(x = "Range probabilities", y = "") +
+    theme_bw() +
+    theme(strip.background = element_blank())
 
 #################
-#df <- test.data %>% 
-#    mutate(Group = ifelse(Subject %in% data_long3$Subject, 1, 0)) %>% 
-#    select(Group, vars) %>%
-#    group_by(Group) 
-<<<<<<< HEAD
-
-=======
- 
->>>>>>> origin
-# chisq.test
-#https://data-flair.training/blogs/chi-square-test-in-r/#:~:text=Chi%2DSquare%20test%20in%20R%20is%20a%20statistical%20method%20which,Green%2C%20Yes%2FNo%20etc.
-#test <- chisq.test(table(df$CLIF.OF, df$Group), simulate.p.value = TRUE)
-#test
-
-#stacked_1 <- df %>% ungroup(.) %>% filter(Group == 1) %>% select(-Group) %>% stack(.) %>% filter(ind != "Group")
-#stacked_1$Group <- "1"
-#stacked_2 <- df %>% ungroup(.) %>% filter(Group == 0) %>% select(-Group) %>% stack(.) %>% filter(ind != "Group")
-#stacked_2$Group <- "0"
-
-#stacked <- rbind(stacked_1, stacked_2)
-
-# stacked %>% filter(ind != "Subject") %>%  
-#     ggplot(., aes(x = ind, y = values, fill = factor(Group))) +
-#     geom_boxplot() +
-#     facet_wrap(ind ~ ., scales = "free") +
-#     stat_pwc(method = "t.test", p.adjust.method = "bonferroni")
-# 
-# stacked %>% filter(ind != "Subject") %>%  
-#     ggplot(., aes(x = ind, y = values, fill = factor(Group))) +
-#     geom_boxplot() +
-#     geom_pwc(aes(group = Group), tip.length = 0,
-#     method = "t_test", p.adjust.method = "none", p.adjust.by = "group",
-#     hide.ns = TRUE) #+
-#     #facet_wrap(ind ~ ., scales = "free") 
-#     
-# comp_means <- compare_means(c(Bilirubin.mg.dl, Creatinine.mg.dl, HE, INR, MAP, 
-#                 CLIF.OF) ~ Group, data = df, 
-#                 method = "t.test",  p.adjust.method = "holm")
-# 
-# 
-# adj_values <- p.adjust(comp_means$p.adj, method = 'holm')
-# comp_means$adj_values = adj_values
-# comp_means
-
-
-# # calibration
-# # funs
-# path_funs <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/funs"
-# source(paste0(path_funs, "/calibration_fun.R"))
-# 
-# #from long to wide 
-# data_wide <- spread(data_long3, model, probs)
-# str(data_wide)
-# 
-# # MELD 
-# cal_MELD.surv <- calibration(data_wide$meld.surv.updated, y = data_wide$D90_surv)
-# cal_MELD.surv$Score <- "MELD"
-# 
-# # Lille
-# cal_Lille <- calibration(data_wide$lille.surv.updated, y = data_wide$D90_surv)
-# cal_Lille$Score <- "Lille"
-# 
-# # CLIF-C ACLF
-# cal_CLIF <- calibration(data_wide$clif.surv.updated, y = data_wide$D90_surv)
-# cal_CLIF$Score <- "CLIF-C ACLF"
-# 
-# # combine dfs
-# df_cal <- rbind(cal_MELD.surv, cal_Lille, cal_CLIF)
-# 
-# # plot with ribbon 
-# df_cal %>%
-#     ggplot(., aes(x = pred, y = obs, col = Score)) +
-#     geom_line(linewidth = 1)  + 
-#     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-#     geom_ribbon(aes(ymin = lower, ymax = upper, fill = Score, linetype = NA),  
-#                 alpha = 0.3, show.legend = F) + 
-#     #scale_fill_manual("", values = col) + 
-#     #scale_color_manual(name = "Score", values = col) + 
-#     facet_grid(. ~ Score) +
-#     coord_equal() +
-#     xlim(0, 1) + 
-#     ylim(0, 1) + 
-#     ylab("Observed survival proportion") + 
-#     xlab("Predicted survival probability") + 
-#     theme_classic() 
-# 
-# library(gmish)
-# ici(data_wide$meld.surv.updated, data_wide$D90_surv)
-# ici(data_wide$lille.surv.updated, data_wide$D90_surv)
-# ici(data_wide$clif.surv.updated, data_wide$D90_surv)
-# 
-# mean(abs(cal_MELD.surv$pred - cal_MELD.surv$obs))
-# 
-# 
-# mean((data_wide$meld.surv.updated - data_wide$D90_surv)^2)
-# mean((data_wide$lille.surv.updated - data_wide$D90_surv)^2)
-# mean((data_wide$clif.surv.updated - data_wide$D90_surv)^2)
-# 
-# #library(DescTools)
-# #BrierScore(data_wide$D90_surv, data_wide$meld.surv.updated)
-# #BrierScore(data_wide$D90_surv, data_wide$lille.surv.updated)
-# #BrierScore(data_wide$D90_surv, data_wide$clif.surv.updated)
-# 
-# library(pROC)
-# # MELD (survival function 1 and 2 do not matter here)
-# roc_meld <- roc(data_wide$D90_surv, data_wide$meld.surv.updated)
-# roc_meld
-# # Lille
-# roc_lille <- roc(data_wide$D90_surv, data_wide$lille.surv.updated)
-# roc_lille
-# # CLIF-C ACLF
-# roc_clif <- roc(data_wide$D90_surv, data_wide$clif.surv.updated)
-<<<<<<< HEAD
-# roc_clif
-=======
-# roc_clif
-
-
->>>>>>> origin
