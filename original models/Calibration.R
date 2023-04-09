@@ -1,10 +1,7 @@
 # This script performs all calculations of model calibration
 library(ggplot2)
 library(dplyr)
-<<<<<<< HEAD
 library(survminer) # for plotting theme
-=======
->>>>>>> origin
 
 # funs
 path_funs <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/funs"
@@ -75,19 +72,13 @@ df_cal %>% filter(Score != "MELD 3.0") %>%
     #scale_fill_manual("", values = col) + 
     #scale_color_manual(name = "Score", values = col) + 
     facet_grid(. ~ Score) +
-<<<<<<< HEAD
     scale_color_brewer(palette = "Dark2") +
     scale_fill_brewer(palette = "Dark2") +
-=======
->>>>>>> origin
     coord_equal() +
     xlim(0, 1) + 
     ylim(0, 1) + 
-    ylab("Observed survival proportion") + 
-    xlab("Predicted survival probability") + 
-<<<<<<< HEAD
-    theme_classic2() 
-=======
-    theme_classic() 
->>>>>>> origin
+    labs(y =  "Observed survival proportion", x = "Predicted survival probability") +
+    theme_classic2() +
+    theme(legend.position = "none")
+
 

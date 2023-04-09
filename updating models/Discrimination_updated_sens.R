@@ -30,10 +30,10 @@ roc_clif <- roc(test.clif$D90_surv, test.clif$clif.surv.updated)
 #############################################   
 ###################### Plots  ###############
 ############################################# 
-roc.list <- list("MELD" = roc_meld, 
-                 #"MELD VanDerwerken" = roc_meld.VanDerwerken,
-                 "CLIF-C ACLF" = roc_clif, 
-                 "Lille" = roc_lille)
+roc.list <- list("CLIF-C ACLF" = roc_clif, 
+                 #"MELD VanDerwerken" = roc_meld.VanDerwerken, 
+                 "Lille" = roc_lille,
+                 "MELD" = roc_meld)
 #save(roc.list, file = "ROC_updated.Rdata")
 
 g.list <- ggroc(roc.list)
@@ -69,6 +69,8 @@ pl <- ggroc(roc.list) +
     geom_ribbon(data = df, aes(x = x, ymin = lower, ymax = upper, fill = name), alpha = 0.3, inherit.aes = F) +
     geom_abline(slope = 1, intercept = 1, linetype = "dashed") + 
     labs(x = "Specificity", y = "Sensitivity") + 
+    scale_color_brewer(palette = "Dark2") +
+    scale_fill_brewer(palette = "Dark2") +
     coord_equal() +
     theme_classic() +
     theme(legend.position = "none") 
@@ -93,7 +95,7 @@ rownames(df_AUC) <- c("low_CL", "mean", "upper_CL")
 
 df_AUC2 <- tibble::rownames_to_column(df_AUC, var = "AUC")
 
-df3 <- gather(df_AUC2, condition, measurement, MELD:Lille, factor_key = TRUE)
+df3 <- gather(df_AUC2, condition, measurement, `CLIF-C ACLF`:MELD, factor_key = TRUE)
 data_wide <- spread(df3, AUC, measurement) %>% arrange(mean)
 
 # reorder factor levels

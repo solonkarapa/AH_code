@@ -1,10 +1,7 @@
 
-<<<<<<< HEAD
 library(ggsci)  # for color palette
 library(grid)
 library(gridExtra)
-=======
->>>>>>> origin
 
 path1 <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"
 load(paste0(path1, "ROC_original.Rdata"))
@@ -16,11 +13,10 @@ load(paste0(path2, "ROC_updated.Rdata"))
 
 roc_list_update <- roc.list
 
-<<<<<<< HEAD
+
 model <- "meld" # meld, lille, clif
-=======
+
 model <- "clif" # meld, lille, clif
->>>>>>> origin
 
 if(model == "meld"){
     # MELD
@@ -63,36 +59,29 @@ dat.ci.list <- lapply(ci.list, function(ciobj)
 
 df <- plyr::ldply(dat.ci.list, data.frame, .id = "name")
 
-<<<<<<< HEAD
 # individual plot
 ggroc(model_list) + 
     ggtitle(model) +
     facet_grid(. ~ name) +
-=======
 
 ggroc(model_list) + 
     ggtitle(model) +
     #facet_grid(. ~ name) +
->>>>>>> origin
     theme_minimal() + 
     geom_ribbon(data = df, aes(x = x, ymin = lower, ymax = upper, fill = name), alpha = 0.3, inherit.aes = F) +
     geom_abline(slope = 1, intercept = 1, linetype = "dashed") + 
     #geom_text(x = 0.5, y = 0.5, label = paste0("p.value")) +
-<<<<<<< HEAD
     annotate(geom = "text", x = 0.3, y = 0.5, label =  paste0("p.value = ", round(P_value_boot$p.value, 2)), fontsize = 12) +
     labs(x = "Specificity", y = "Sensitivity") + 
     scale_fill_jco() + 
     scale_color_jco() +
-=======
     annotate(geom = "text", x = 0.3, y = 0.5, label =  paste0("p.value ", round(P_value_boot$p.value, 2)), fontsize = 12) +
     labs(x = "Specificity", y = "Sensitivity") + 
->>>>>>> origin
     coord_equal() +
     theme_classic() +
     theme(legend.position = "none") 
 
 
-<<<<<<< HEAD
 #### arranged plots
 linewidth <- 1.3
 text_size <- 4.5
@@ -149,12 +138,7 @@ grid.arrange(arrangeGrob(roc1),
              arrangeGrob(roc2), 
              arrangeGrob(roc3),
              ncol = 3, left = "Sensitivity", bottom = "Specificity")
-=======
 
-
-
-
->>>>>>> origin
 
 
 
