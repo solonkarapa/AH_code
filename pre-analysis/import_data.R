@@ -24,13 +24,49 @@ stph$D90_surv <- 1 - stph$D90_DTH
 # Transform creatinine into mg/dl
 stph$Creatinine.mg.dl <- 0.0113*stph$Creatinine
 
+# Time-to-event
+stph2 <- stph %>% mutate(Date_of_death = as.Date(Date_of_death, format = "%d/%m/%y"),
+                         Date_rand = as.Date(Treatment.start.date..randomisation.date.if.rx.start.date.missing., format = "%d/%m/%y"),
+                         Date_Last_day_study_contact = as.Date(Last_day_study_contact,  format = "%d-%B-%y"),
+                         Death_event = ifelse(is.na(Date_of_death), 0, 1), 
+                         Time_to_death_from_rand = ifelse(Death_event == 1, 
+                                                          (Date_of_death - Date_rand), (Date_Last_day_study_contact - Date_rand)))
+#    
+#)
+stph2$Time_to_death_from_rand
+stph2$Death_event
+stph2 %>% filter(Death_event == 0 & Time_to_death_from_rand < 90) %>% 
+    select(Time_to_death_from_rand, Death_event, Date_of_death, 
+           Time.to.death..calculated.by.MRIS.retrieved.data., Date_Last_day_study_contact, Date_rand) #%>% 
+    #summarise(n())
+
+
+stph$Last_day_study_contact[1]
+as.Date(stph$Last_day_study_contact[1], format = "%d-%B-%y")
+
+stph2 <- stph %>% mutate(Event = ifelse(is.na(Time.to.death..calculated.by.MRIS.retrieved.data.), 0, 1))
+stph2 %>% filter(Time.to.death..calculated.by.MRIS.retrieved.data. < 90)
+range(stph$Time.to.death..calculated.by.MRIS.retrieved.data., na.rm = T)
+
+stph$Y1_DTH
+
+plot(density(na.omit(stph$Time.to.death..calculated.by.MRIS.retrieved.data.)))
+as.Date(Date_of_death, format = "%d/%m/%y")
+ind <-str_detect(colnames(stph), "rand")
+stph[,ind]
+#stph$Initial.Admission.date
+#stph$Treatment.start.date..randomisation.date.if.rx.start.date.missing[1]
+as.Date(stph$Treatment.start.date..randomisation.date.if.rx.start.date.missing, format = "%d/%m/%y")
+colnames(stph)
+
+sum(stph$Time.to.death..calculated.by.MRIS.retrieved.data. < 90
+
 # Handle missing data and create data frames for each of the prognostic scores
 stph.meld <- stph[complete.cases(stph$Bilirubin.mg.dl, stph$Creatinine, stph$INR, stph$Sodium),]
 stph.clif <- stph[complete.cases(stph$Bilirubin.mg.dl, stph$Creatinine, stph$INR, stph$WBC, 
                                  stph$HE, stph$MAP),]
 stph.lille <- stph[complete.cases(stph$Bilirubin.day.7, stph$Bilirubin.Merged, stph$Creatinine,
                                   stph$protime, stph$Albumin),]
-
 
 #path <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/pre-analysis/"
 #setwd(path)
