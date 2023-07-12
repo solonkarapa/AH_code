@@ -6,6 +6,7 @@ library(tidyr)
 library(forcats)
 library(purrr)
 library(survminer)
+library(psych)
 
 ### data 
 path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models"
@@ -16,40 +17,90 @@ data <- test.data %>%
     select(Subject, meld.surv.updated, lille.surv.updated, clif.surv.updated, D90_surv)
 
 #############################################   
-################ Correlation  ###############
+################### ICC  ####################
 ############################################# 
+coords <- c(0.25, 1)
 
-coords <- c(0.01, 1)
+icc_meld_lille <- ICC(data[,c("meld.surv.updated", "lille.surv.updated")])
+
+ICC_meld_lille <- paste0("ICC = ", round(icc_meld_lille$results$ICC[3], 2), 
+                         ", p = ", signif(icc_meld_lille$results$p[3], 2))
 
 p1 <- ggscatter(data, x = "meld.surv.updated", y = "lille.surv.updated",
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = F, cor.method = "pearson", cor.coef.coord = coords,
+          color = "grey", alpha = 0.7,
+          add.params = list(color = "purple2")) + 
+    geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
+    labs(x = "MELD", y = "Lille") +
+    coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) + 
+    annotate("text", x = coords[1], y = coords[2], label = ICC_meld_lille, size = 4, fontface = 2) +
+    theme_classic2()
+
+icc_clif_meld <- ICC(data[,c("meld.surv.updated", "clif.surv.updated")])
+
+ICC_CLIF_MELD <- paste0("ICC = ", round(icc_clif_meld$results$ICC[3], 2), ", p = ", signif(icc_clif_meld$results$p[3], 2))
+
+p2 <- ggscatter(data, x = "meld.surv.updated", y = "clif.surv.updated",
                 add = "reg.line", conf.int = TRUE, 
-                cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = coords,
+                cor.coef = F, cor.method = "pearson", cor.coef.coord = coords,
                 color = "grey", alpha = 0.7,
                 add.params = list(color = "purple2")) + 
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
-    labs(x = "MELD", y = "Lille") +
-    coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
-    theme_classic2()
-
-p2 <- ggscatter(data, x = "meld.surv.updated", y = "clif.surv.updated",
-          add = "reg.line", conf.int = TRUE, 
-          cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = coords,
-          color = "grey", alpha = 0.7,
-          add.params = list(color = "purple2")) + 
-    geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
     labs(x = "MELD", y = "CLIF-C ACLF") +
     coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+    annotate("text", x = coords[1], y = coords[2], label = ICC_CLIF_MELD, size = 4, fontface = 2) + 
     theme_classic2()
 
+icc_clif_lille <- ICC(data[,c("clif.surv.updated", "lille.surv.updated")])
+
+ICC_CLIF_lille <- paste0("ICC = ", round(icc_clif_lille$results$ICC[3], 2), ", p = ", signif(icc_clif_lille$results$p[3], 2))
+
 p3 <- ggscatter(data, x = "lille.surv.updated", y = "clif.surv.updated",
-          add = "reg.line", conf.int = TRUE, 
-          cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = coords,
-          color = "grey", alpha = 0.7,
-          add.params = list(color = "purple2")) + 
+                add = "reg.line", conf.int = TRUE, 
+                cor.coef = F, cor.method = "pearson", cor.coef.coord = coords,
+                color = "grey", alpha = 0.7,
+                add.params = list(color = "purple2")) + 
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
     labs(x = "Lille", y = "CLIF-C ACLF") +
     coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+    annotate("text", x = coords[1], y = coords[2], label = ICC_CLIF_lille, size = 4, fontface = 2) +  
     theme_classic2()
+
+#############################################   
+################ Correlation  ###############
+############################################# 
+#coords <- c(0.01, 1)
+# 
+# p1 <- ggscatter(data, x = "meld.surv.updated", y = "lille.surv.updated",
+#                 add = "reg.line", conf.int = TRUE, 
+#                 cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = coords,
+#                 color = "grey", alpha = 0.7,
+#                 add.params = list(color = "purple2")) + 
+#     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
+#     labs(x = "MELD", y = "Lille") +
+#     coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+#     theme_classic2()
+# 
+# p2 <- ggscatter(data, x = "meld.surv.updated", y = "clif.surv.updated",
+#           add = "reg.line", conf.int = TRUE, 
+#           cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = coords,
+#           color = "grey", alpha = 0.7,
+#           add.params = list(color = "purple2")) + 
+#     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
+#     labs(x = "MELD", y = "CLIF-C ACLF") +
+#     coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+#     theme_classic2()
+# 
+# p3 <- ggscatter(data, x = "lille.surv.updated", y = "clif.surv.updated",
+#           add = "reg.line", conf.int = TRUE, 
+#           cor.coef = TRUE, cor.method = "pearson", cor.coef.coord = coords,
+#           color = "grey", alpha = 0.7,
+#           add.params = list(color = "purple2")) + 
+#     geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
+#     labs(x = "Lille", y = "CLIF-C ACLF") +
+#     coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+#     theme_classic2()
 
 #############################################   
 ################ Correlation  ###############
@@ -178,4 +229,34 @@ sum_df %>% filter(!(variable %in% vars_to_remove)) %>%
     theme_bw() +
     theme(strip.background = element_blank())
 
-#################
+#############################################   
+########### ICC exploration  ################
+#############################################
+#https://www.datanovia.com/en/lessons/intraclass-correlation-coefficient-in-r/
+# library(psych)
+# ICC(data[,c(2:4)])
+# 
+# ICC(data[,c(2,4)])
+# 
+#cor.test(data[,c(2)],data[,c(4)], method = c("pearson"))
+#ICC(data[,c(2,4)])
+# 
+#cor.test(data[,c(2)],data[,c(3)], method = c("pearson"))
+#ICC(data[,c(2,3)])
+# 
+#cor.test(data[,c(3)],data[,c(4)], method = c("pearson"))
+#ICC(data[,c(3,4)])
+# 
+# #The intra-class correlation coefficient was computed to assess the agreement between three scores 
+# #in predicting 90-day survival. There was a poor agreement between the three scores, 
+# # using the two-way mixed-effects model and “single rater” unit, kappa = 0.2, p = 0.056.
+# 
+# #ICC estimates and their 95% confident intervals were calculated using the R package psych (2.3.6) based on a "single rating" unit, 
+# #two-way mixed-effects model. - add https://www.sciencedirect.com/science/article/pii/S1556370716000158
+# 
+# #library("irr") # an alternative package 
+# #icc(data[,c(2:4)], model = "oneway",
+# #    type = "consistency", unit = "single")
+
+
+

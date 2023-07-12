@@ -59,7 +59,7 @@ stph[,ind]
 as.Date(stph$Treatment.start.date..randomisation.date.if.rx.start.date.missing, format = "%d/%m/%y")
 colnames(stph)
 
-sum(stph$Time.to.death..calculated.by.MRIS.retrieved.data. < 90
+sum(stph$Time.to.death..calculated.by.MRIS.retrieved.data. < 90)
 
 # Handle missing data and create data frames for each of the prognostic scores
 stph.meld <- stph[complete.cases(stph$Bilirubin.mg.dl, stph$Creatinine, stph$INR, stph$Sodium),]
