@@ -78,8 +78,10 @@ library(table1)
 stph$HE_f <- as.factor(stph$HE) 
 stph$D90_surv_f <- as.factor(stph$D90_surv)
 stph$Gender_f <- as.factor(stph$Gender)
+# table stratified by outcome
 tb1 <- table1::table1(~ Bilirubin.mg.dl + Creatinine.mg.dl + Albumin + WBC + protime + 
-                 INR + HE_f + Bilirubin.day.7 + Gender_f + D90_surv_f + Sodium, data = stph)
+                          INR + HE_f + Bilirubin.day.7 + Gender_f + Sodium | factor(D90_surv_f), data = stph)
+
 
 library(xtable)
 xtable(as_tibble(tb1))
