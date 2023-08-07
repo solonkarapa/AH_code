@@ -74,7 +74,6 @@ rm(temp2)
 # combine dfs
 df_cal <- rbind(cal_MELD.surv1, cal_MELD.VanDerwerken, cal_Lille, cal_CLIF)
 
-
 #############################################   
 ###################### Plots  ###############
 ############################################# 
@@ -88,6 +87,8 @@ df_cal %>%
     #scale_fill_manual("", values = col) + 
     #scale_color_manual(name = "Score", values = col) + 
     facet_grid(. ~ Score) +
+    scale_color_brewer(palette = "Dark2") +
+    scale_fill_brewer(palette = "Dark2") +
     xlim(0, 1) + 
     ylim(0, 1) + 
     ylab("Sensitivity") + 

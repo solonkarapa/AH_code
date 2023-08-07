@@ -125,5 +125,5 @@ imp_data3 <- imp_sens_df %>%
     )
 
 colnames(imp_data3)
-
+dim(imp_data3)
 

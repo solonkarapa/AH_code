@@ -58,7 +58,7 @@ rm(temp)
 # Lille
 cal_Lille <- tibble()
 for(i in 1:imp_ind){
-    for(g in 1:4){
+    for(g in 1:length(delta)){
         d <- unique(imp_index[[i]]$delta)
         df <- imp_index[[i]] %>% filter(delta == d[g])
         
@@ -70,10 +70,9 @@ for(i in 1:imp_ind){
     }
 }
 
-unique(cal_Lille$delta)
-i <- 1
-imp_index[[i]] %>% group_by(delta) %>% summarise(. ~ calibration, pred = Lille.surv, obs = D90_surv)
-
+#unique(cal_Lille$delta)
+#i <- 1
+#imp_index[[i]] %>% group_by(delta) %>% summarise(. ~ calibration, pred = Lille.surv, obs = D90_surv)
 
 rm(temp)
 
@@ -96,14 +95,14 @@ df_cal <- rbind(cal_MELD.surv1, cal_MELD.surv2, cal_MELD.VanDerwerken, cal_Lille
 
 # plot without ribbon and without MELD 3.0
 cal_Lille %>% filter(Score == "Lille") %>%
-    ggplot(., aes(x = pred, y = obs, col = delta)) +
-    geom_line(aes(group = .imp))  + 
+    ggplot(., aes(x = pred, y = obs, group = delta, col = delta)) +
+    geom_line(aes(alpha = 0.5))  + 
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
     #geom_ribbon(aes(ymin = lower, ymax = upper, linetype = NA), 
     #            alpha = 0.3, show.legend = F) + 
     #scale_fill_manual("", values = col) + 
     #scale_color_manual(name = "Score", values = col) + 
-    facet_grid(delta ~ .) +
+    #facet_grid(. ~ delta) +
     xlim(0, 1) + 
     ylim(0, 1) + 
     ylab("Observed proportion") + 
@@ -111,9 +110,30 @@ cal_Lille %>% filter(Score == "Lille") %>%
     theme_classic() +
     theme(legend.position = "none")
 
+cal_Lille %>% filter(Score == "Lille") %>% 
+    mutate(grp = paste0(delta, "_", .imp)) %>%
+    ggplot(., aes(x = pred, y = obs, col = grp)) +
+    geom_line(aes(alpha = 0.7))  + 
+    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+    #geom_ribbon(aes(ymin = lower, ymax = upper, linetype = NA), 
+    #            alpha = 0.3, show.legend = F) + 
+    #scale_fill_manual("", values = col) + 
+    #scale_color_manual(name = "Score", values = col) + 
+    #facet_grid(. ~ delta) +
+    xlim(0, 1) + 
+    ylim(0, 1) + 
+    ylab("Observed proportion") + 
+    xlab("Predicted probability") + 
+    theme_classic() #+
+    #theme(legend.position = "none")
+  
+
+cal_Lille %>% filter(delta == "0" & .imp == 1)
 
 cal_Lille %>% ggplot(.) +
-    geom_boxplot(aes(x = pred, fill = delta))
+    geom_boxplot(aes(x = pred, fill = delta)) +
+    scale_color_brewer(palette = "Dark2") +
+    scale_fill_brewer(palette = "Dark2") 
 
 imp_data3 %>% select(Lille.surv, delta, .imp) %>%
     group_by(delta) %>%

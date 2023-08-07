@@ -76,8 +76,8 @@ df_cal <- rbind(cal_MELD.surv1, cal_MELD.surv2, cal_MELD.VanDerwerken, cal_Lille
 #############################################   
 ###################### Plots  ###############
 ############################################# 
-# plot without ribbon and without MELD 3.0
-df_cal %>% filter(Score != "MELD 3.0") %>%
+# plot without ribbon 
+df_cal %>% 
     ggplot(., aes(x = pred, y = obs, col = Score)) +
     geom_line(aes(group = .imp), lwd = 0.7)  + 
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
@@ -85,6 +85,8 @@ df_cal %>% filter(Score != "MELD 3.0") %>%
     #            alpha = 0.3, show.legend = F) + 
     #scale_fill_manual("", values = col) + 
     #scale_color_manual(name = "Score", values = col) + 
+    scale_color_brewer(palette = "Dark2") +
+    scale_fill_brewer(palette = "Dark2") +
     facet_grid(. ~ Score) +
     xlim(0, 1) + 
     ylim(0, 1) + 
