@@ -123,4 +123,3 @@ imp_data3 %>% select(Lille.surv, delta, .imp) %>%
 
 imp_data3 %>% select(Lille.surv, delta, .imp) %>%
     group_by(delta) %>% summarise(mean(Lille.surv))
-

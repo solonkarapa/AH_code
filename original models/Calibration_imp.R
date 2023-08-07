@@ -76,7 +76,6 @@ df_cal <- rbind(cal_MELD.surv1, cal_MELD.surv2, cal_MELD.VanDerwerken, cal_Lille
 #############################################   
 ###################### Plots  ###############
 ############################################# 
-
 # plot without ribbon and without MELD 3.0
 df_cal %>% filter(Score != "MELD 3.0") %>%
     ggplot(., aes(x = pred, y = obs, col = Score)) +

@@ -111,7 +111,6 @@ data_wide <- spread(df3, AUC, measurement) %>% arrange(mean)
 # reorder factor levels
 data_wide$condition <- fct_reorder(data_wide$condition, data_wide$mean)
 
-
 p_auc <- ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
     geom_point(lwd = 2)  + 
     coord_cartesian(xlim = c(0.5, 0.86)) +
