@@ -7,6 +7,8 @@ library(dplyr)
 library(purrr)
 library(forcats)
 library(VIM)
+library(ggplot2)
+library(gridExtra)
 
 ##################################################
 ###################### data ######################
@@ -91,13 +93,13 @@ imp_data <- complete(imp, action = "long")
 imp_data[which(is.na(imp_data)),]
 
 #setwd("~/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/pre-analysis")
-#save(imp, file = "imputed_data.Rdata")
+#save(imp_data, file = "imputed_data.Rdata")
 
 ###########################################################
 ################### Sensitivity analysis ##################
 ###########################################################
 # create  vector that represent the following adjustment values 
-#for Bili day 7: 0 for MAR, and -50, -15, and -20 for MNAR.
+#for Bili day 7: 0 for MAR, and -50, -100, and -200 for MNAR.
 delta <- c(0, -50, -100, -200)
 
 # perform a dry run (using maxit = 0)
@@ -113,32 +115,27 @@ for (i in 1:length(delta)){
     imp.all[[i]] <- imp
 }
 
-bwplot(imp.all[[1]])
-bwplot(imp.all[[4]])
+#bwplot(imp.all[[1]])
+#bwplot(imp.all[[4]])
 
-p1 <- densityplot(imp.all[[1]], ~ Bilirubin.day.7, lwd = 3, xlab = "", ylab = "")
-p2 <- densityplot(imp.all[[2]], ~ Bilirubin.day.7, lwd = 3, xlab = "", ylab = "")
-p3 <- densityplot(imp.all[[3]], ~ Bilirubin.day.7, lwd = 3, xlab = "", ylab = "")
-p4 <- densityplot(imp.all[[4]], ~ Bilirubin.day.7, lwd = 3, xlab = "", ylab = "")
+p1 <- densityplot(imp.all[[1]], ~ Bilirubin.day.7, lwd = 3, xlab = "", ylab = "", main = expression(paste(delta, " = 0")))
+p2 <- densityplot(imp.all[[2]], ~ Bilirubin.day.7, lwd = 3, xlab = "", ylab = "", main = expression(paste(delta, " = -50")))
+p3 <- densityplot(imp.all[[3]], ~ Bilirubin.day.7, lwd = 3, xlab = "", ylab = "", main = expression(paste(delta, " = -100")))
+p4 <- densityplot(imp.all[[4]], ~ Bilirubin.day.7, lwd = 3, xlab = "", ylab = "", main = expression(paste(delta, " = -200")))
 
-library(gridExtra)
 grid.arrange(p1, p2, p3, p4, nrow = 1, 
              bottom = textGrob("Bilirubin day 7", gp = gpar(fontsize = 13), vjust = -1.5),
              left = textGrob("Density", gp = gpar(fontsize = 13), rot = 90, vjust = 1.5, hjust = 0)
              )
 
-densityplot(imp.all[[4]], ~ Bilirubin.day.7, lwd = 3)
-
-plot(density(imp.all[[1]]$imp$Bilirubin.day.7[,1]))
-
-
-summary(with(imp.all[[3]], range(Bilirubin.day.7)))
+#densityplot(imp.all[[1]], ~ Bilirubin.day.7, lwd = 3)
+#densityplot(imp.all[[4]], ~ Bilirubin.day.7, lwd = 3)
+#summary(with(imp.all[[3]], range(Bilirubin.day.7)))
 
 ## post-process
 names(imp.all) <- delta # add names to list
 complete_list <- lapply(imp.all, complete, action = "long")
 imp_sens_df <- map_df(complete_list, ~ as.data.frame(.x), .id = "delta")
-
 
 #setwd("~/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/pre-analysis")
 #save(imp_sens_df, file = "imputed_data_sens.Rdata")

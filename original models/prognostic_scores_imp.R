@@ -1,13 +1,26 @@
 
+library(readxl)
+library(dplyr)
+
+#############################################
+################ load data ##################
+#############################################
+# imputed data path
+path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/pre-analysis/"
+
+# imputed data - default
+load(paste0(path_data, "imputed_data.Rdata"))
+
+# imputed data - sensitivity analysis
+load(paste0(path_data, "imputed_data_sens.Rdata"))
+
+#####
+# Extract 90-day survival probability from VanDerwerke et al, 2021 
+MELD_VanDerwerken <- read_excel("~/IDrive-Sync/Projects/MIMAH/data/MELD_VanDerwerken.xlsx")
 
 #############################################
 ############### MELD score ##################
 #############################################
-#####
-# Extract 90-day survival probability from VanDerwerke et al, 2021 
-library(readxl)
-MELD_VanDerwerken <- read_excel("~/IDrive-Sync/Projects/MIMAH/data/MELD_VanDerwerken.xlsx")
-
 # data preparation
 imp_data2 <- imp_data %>% 
     dplyr::mutate(
@@ -67,6 +80,9 @@ imp_data2 <- imp_data %>%
 
 colnames(imp_data2)
 
+#setwd("~/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/original models")
+#save(imp_data2, file = "imputed_orig_scores.Rdata")
+    
 # data preparation sensitivity analysis
 imp_data3 <- imp_sens_df %>% 
     dplyr::mutate(
@@ -126,4 +142,7 @@ imp_data3 <- imp_sens_df %>%
 
 colnames(imp_data3)
 dim(imp_data3)
+
+#setwd("~/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/original models")
+#save(imp_data3, file = "imputed_sens_orig_scores.Rdata")
 
