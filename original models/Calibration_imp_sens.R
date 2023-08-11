@@ -90,13 +90,16 @@ for(i in 1:imp_ind){
 ###################### Plots  ###############
 ############################################# 
 # distribution of predictions
-cal_Lille %>% ggplot(.) +
+p5 <- cal_Lille %>% ggplot(.) +
     geom_boxplot(aes(x = pred, fill = as.factor(as.numeric(delta)))) +
     scale_fill_brewer(palette = "Dark2") +
     labs(fill = expression(delta)) +
-    theme_classic() 
+    xlab("Predicted survival distribution - Lille") + 
+    theme_classic() +
+    theme(axis.text.y = element_blank(),
+          axis.ticks.y = element_blank())
 
-cal_Lille %>% filter(Score == "Lille") %>% 
+p6 <- cal_Lille %>% filter(Score == "Lille") %>% 
     mutate(grp = paste0(delta, "_", .imp),
            delta = as.numeric(delta)) %>%
     ggplot(., aes(x = pred, y = obs, group = grp)) +

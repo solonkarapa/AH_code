@@ -138,5 +138,5 @@ complete_list <- lapply(imp.all, complete, action = "long")
 imp_sens_df <- map_df(complete_list, ~ as.data.frame(.x), .id = "delta")
 
 #setwd("~/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/pre-analysis")
-#save(imp_sens_df, file = "imputed_data_sens.Rdata")
+#save(imp.all, imp_sens_df, file = "imputed_data_sens.Rdata")
 
