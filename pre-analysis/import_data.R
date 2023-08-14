@@ -71,9 +71,30 @@ stph$HE_f <- as.factor(stph$HE)
 stph$D90_surv_f <- as.factor(stph$D90_surv)
 stph$Gender_f <- as.factor(stph$Gender)
 # table stratified by outcome
-tb1 <- table1::table1(~ Bilirubin.mg.dl + Creatinine.mg.dl + Albumin + WBC + protime + 
+tb1 <- table1::table1(~ Age.at.randomisation..calc. + Bilirubin.mg.dl + Creatinine.mg.dl + Albumin + WBC + protime + 
                           INR + HE_f + Bilirubin.day.7 + Gender_f + Sodium | factor(D90_surv_f), data = stph)
 
 library(xtable)
 xtable(as_tibble(tb1))
+
+# KM estimates and plots
+library(ggsurvfit)
+survfit2(Surv(Time_to_death_from_rand, Death_event) ~ 1, data = stph) %>% 
+    ggsurvfit() +
+    labs(
+        x = "Days",
+        y = "Overall survival probability"
+    ) + 
+    add_confidence_interval() +
+    add_risktable()
+
+summary(survfit(Surv(Time_to_death_from_rand, Death_event) ~ 1, data = stph), times = 90)
+summary(survfit(Surv(Time_to_death_from_rand, Death_event) ~ 1, data = stph), times = 183)
+
+survfit(Surv(Time_to_death_from_rand, Death_event) ~ 1, data = stph) %>% 
+    gtsummary::tbl_survfit(
+        times = 90,
+        label_header = "**1-year survival (95% CI)**"
+    )
+
 

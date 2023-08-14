@@ -142,7 +142,7 @@ data_wide$upper_CL <- round(data_wide$upper_CL, 2)
 p_roc + geom_text(data = data_wide, 
                   aes(0.02, 0.10, label = paste0("AUC (95% CI): ", mean, " (", low_CL, "-", upper_CL, ")" ), 
                       hjust = 1), col = "black") #+
-    #theme_classic() 
+#theme_classic() 
 
 
 #####
