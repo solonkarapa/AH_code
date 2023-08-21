@@ -4,11 +4,11 @@
 #############################################
 
 # load full data 
-path_data1 <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/pre-analysis/"
+path_data1 <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/pre-analysis/"
 load(paste0(path_data1, "full_sample.Rdata"))
 
 # load data with original models 
-path_data2 <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"
+path_data2 <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/original models/"
 load(paste0(path_data2, "original_models.Rdata"))
 
 #split data on full stph sample and then select the complete cases per model

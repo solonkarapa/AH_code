@@ -4,8 +4,9 @@ library(survminer) # for plotting theme
 
 path_funs <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/funs"
 source(paste0(path_funs, "/calibration_fun.R"))
+source(paste0(path_funs, "/val.prob.ci.2_wrapper.R"))
 
-path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models"
+path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/updating models"
 load(paste0(path_data, "/recalibrated_models_default.Rdata"))
 
 #############################################   
@@ -46,7 +47,7 @@ df_cal %>%
     theme_classic() 
 
 # plot with ribbon 
-df_cal %>%
+p_calibration <- df_cal %>%
     ggplot(., aes(x = pred, y = obs, col = Score)) +
     geom_line(lwd = 1)  + 
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
@@ -65,3 +66,31 @@ df_cal %>%
     theme_classic2() +
     theme(legend.position = "none")
  
+#############################################   
+############## Summary Stats  ###############
+############################################# 
+
+# compute calibration slopes and intercepts
+
+# MELD_1 survival function
+MELD_stats <- val.prob.ci.2_wrapper(test.data$meld.surv.updated, test.data$D90_surv, "MELD")
+
+# Lille
+Lille_stats <- val.prob.ci.2_wrapper(test.data$lille.surv.updated, test.data$D90_surv, "Lille")
+
+#CLIF-C ACLF
+clif_stats <- val.prob.ci.2_wrapper(test.data$clif.surv.updated, y = test.data$D90_surv, "CLIF-C ACLF")
+
+
+df_stats <- rbind(MELD_stats, Lille_stats, clif_stats) %>% relocate(Score)
+
+
+p_calibration + geom_text(data = df_stats %>% filter(stat == "intercept"), 
+                  aes(0.1, 0.90, label = 
+                          paste0("Intercept: ", Point.estimate, " (", Lower.confidence.limit, "-", Upper.confidence.limit, ")"), 
+                      hjust = 0), col = "black") +
+    geom_text(data = df_stats %>% filter(stat == "slope"), 
+              aes(0.1, 0.85, label = 
+                      paste0("Slope: ", Point.estimate, " (", Lower.confidence.limit, "-", Upper.confidence.limit, ")"), 
+                  hjust = 0), col = "black")
+
