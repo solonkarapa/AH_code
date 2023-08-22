@@ -77,6 +77,9 @@ tb1 <- table1::table1(~ Age.at.randomisation..calc. + Bilirubin.mg.dl + Creatini
 library(xtable)
 xtable(as_tibble(tb1))
 
+# 90-day death rate
+mean(stph$D90_DTH)
+
 # KM estimates and plots
 library(ggsurvfit)
 survfit2(Surv(Time_to_death_from_rand, Death_event) ~ 1, data = stph) %>% 

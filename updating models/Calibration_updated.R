@@ -86,11 +86,11 @@ df_stats <- rbind(MELD_stats, Lille_stats, clif_stats) %>% relocate(Score)
 
 
 p_calibration + geom_text(data = df_stats %>% filter(stat == "intercept"), 
-                  aes(0.1, 0.90, label = 
-                          paste0("Intercept: ", Point.estimate, " (", Lower.confidence.limit, "-", Upper.confidence.limit, ")"), 
+                  aes(0.1, 0.95, label = 
+                          paste0("Intercept (95% CI): ", Point.estimate, " (", Lower.confidence.limit, "-", Upper.confidence.limit, ")"), 
                       hjust = 0), col = "black") +
     geom_text(data = df_stats %>% filter(stat == "slope"), 
-              aes(0.1, 0.85, label = 
-                      paste0("Slope: ", Point.estimate, " (", Lower.confidence.limit, "-", Upper.confidence.limit, ")"), 
+              aes(0.1, 0.90, label = 
+                      paste0("Slope (95% CI): ", Point.estimate, " (", Lower.confidence.limit, "-", Upper.confidence.limit, ")"), 
                   hjust = 0), col = "black")
 
