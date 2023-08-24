@@ -84,10 +84,9 @@ Lille_stats <- val.prob.ci.2_wrapper(stph.lille$Lille.surv_6M, stph.lille$M6_sur
 #CLIF-C ACLF
 clif_stats <- val.prob.ci.2_wrapper(stph.clif$CLIF.surv_6M, y = stph.clif$M6_surv, "CLIF-C ACLF")
 
-
 df_stats <- rbind(MELD_stats, Lille_stats, clif_stats) %>% relocate(Score)
 
-
+# plot
 p_calibration + geom_text(data = df_stats %>% filter(stat == "intercept"), 
                           aes(0.05, 0.95, label = 
                                   paste0("Intercept (95% CI): ", Point.estimate, " (", Lower.confidence.limit, "-", Upper.confidence.limit, ")"), 

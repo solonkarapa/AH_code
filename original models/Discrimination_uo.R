@@ -43,6 +43,7 @@ roc.list <- list("CLIF-C ACLF" = roc_clif,
 #           "CLIF-C ACLF" = roc_clif, 
 #           "Lille" = roc_lille)
 
+#setwd(path_data)
 #save(roc.list, file = "ROC_original.Rdata")
 
 g.list <- ggroc(roc.list)

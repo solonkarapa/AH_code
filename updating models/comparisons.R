@@ -3,18 +3,18 @@ library(ggsci)  # for color palette
 library(grid)
 library(gridExtra)
 
-path1 <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"
+path1 <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/original models/"
 load(paste0(path1, "ROC_original.Rdata"))
 
 roc_list_orig <- roc.list
 
-path2 <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models/"
+path2 <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/updating models/"
 load(paste0(path2, "ROC_updated.Rdata"))
 
 roc_list_update <- roc.list
 
 
-model <- "meld" # meld, lille, clif
+#model <- "meld" # meld, lille, clif
 
 model <- "clif" # meld, lille, clif
 

@@ -5,7 +5,7 @@ library(rms)
 library(pROC)
 
 # load data
-path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/original models/"
+path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/original models/"
 load(paste0(path_data, "complete_cases_models.Rdata"))
 
 # Set random seed
@@ -13,7 +13,7 @@ set.seed(111)
 
 ######
 # Split complete-case sample in training and test observations
-fraction <- 0.8
+fraction <- 0.7
 dt <- sort(sample(nrow(stph.c), nrow(stph.c)*fraction))
 test.data <- stph.c[dt,]
 train.data <- stph.c[-dt,]
@@ -87,6 +87,11 @@ rownames(df) <- NULL
 
 library(xtable)
 xtable(df[c(3, 1, 2)])
+
+
+#path_to_save <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/updating models/"
+#setwd(path_to_save)
+#save(test.data, file = "recalibrated_models_default.Rdata")
 
 
 

@@ -9,7 +9,7 @@ library(survminer)
 library(psych)
 
 ### data 
-path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models"
+path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/updating models"
 load(paste0(path_data, "/recalibrated_models_default.Rdata"))
 
 # subset data
@@ -192,7 +192,9 @@ sum_df <- res %>%
 
 vars_to_keep <- c("CLIF.OF")
 
-p6 <- sum_df %>% filter(variable %in% vars_to_keep) %>%
+p6 <- sum_df %>% 
+    filter(variable %in% vars_to_keep) %>%
+    mutate(variable = ifelse(variable == "CLIF.OF", "CLIF OF", NA)) %>%
     ggplot(., aes(x = threshold, y = value)) +
     geom_point() +
     geom_line() +

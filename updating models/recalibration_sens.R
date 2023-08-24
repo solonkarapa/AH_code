@@ -15,7 +15,7 @@ load(paste0(path_data2, "original_models.Rdata"))
 
 # Split full sample in training and test observations
 ## make sure to use the same seed and fraction as in recalibrate.R script 
-fraction <- 0.8
+fraction <- 0.7
 
 #dt <- sort(sample(nrow(stph), nrow(stph) * fraction))
 #test.data <- stph[dt,]
@@ -115,7 +115,7 @@ df
 library(xtable)
 xtable(t(df))
 
-#path_to_save <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models/"
+#path_to_save <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/updating models/"
 #setwd(path_to_save)
 #save(test.meld, test.lille, test.clif, file = "recalibrated_models_sens.Rdata")
 

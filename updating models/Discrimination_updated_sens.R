@@ -5,7 +5,7 @@ library(ggplot2)
 #library(ggROC)
 
 # load data
-path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models"
+path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/updating models"
 load(paste0(path_data, "/recalibrated_models_sens.Rdata"))
 
 #############################################   

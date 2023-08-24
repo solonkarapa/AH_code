@@ -2,10 +2,13 @@
 library(pROC)
 library(dplyr)
 library(ggplot2)
+library(purrr)
+library(tidyr)
+library(forcats)
 #library(ggROC)
 
 # load data
-path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/updating models"
+path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/updating models"
 load(paste0(path_data, "/recalibrated_models_default.Rdata"))
 
 #############################################   
@@ -34,6 +37,7 @@ roc.list <- list(#"MELD VanDerwerken" = roc_meld.VanDerwerken,
                  "CLIF-C ACLF" = roc_clif, 
                  "Lille" = roc_lille,
                  "MELD" = roc_meld)
+#setwd(path_data)
 #save(roc.list, file = "ROC_updated.Rdata")
 
 g.list <- ggroc(roc.list)
