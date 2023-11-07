@@ -17,6 +17,11 @@ load(paste0(path_data, "imputed_orig_scores.Rdata"))
 imp_index <- group_split(imp_data2, .imp) 
 
 imp_ind <- max(imp_data2$.imp)
+
+imp_index_Bili7 <- group_split(imp_data2_Biliday7, .imp) 
+
+imp_ind_Bili7 <- max(imp_data2_Biliday7$.imp)
+
 # MELD_1
 cal_MELD.surv1 <- tibble()
 for(i in 1:imp_ind){
@@ -52,8 +57,8 @@ rm(temp)
 
 # Lille
 cal_Lille <- tibble()
-for(i in 1:imp_ind){
-    temp <- calibration(imp_index[[i]]$Lille.surv, y = imp_index[[i]]$D90_surv)
+for(i in 1:imp_ind_Bili7){
+    temp <- calibration(imp_index_Bili7[[i]]$Lille.surv, y = imp_index_Bili7[[i]]$D90_surv)
     temp$Score <- "Lille"
     temp$.imp <- i
     cal_Lille <- rbind(cal_Lille, temp)

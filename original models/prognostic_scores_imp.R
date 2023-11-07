@@ -70,18 +70,30 @@ imp_data2 <- imp_data %>%
         CLIF.C = 10 * (0.33 * CLIF.OF + 0.04 * Age + 0.63 * log(WBC) - 2),
         CLIF.surv = exp(-0.0079 * exp(0.0869 * CLIF.C)),
         # Lille
-        ren.insuf = ifelse(Creatinine.mg.dl < 1.3, 0, 1), 
-        Bilirubin.Merged = Bilirubin.mg.dl * 17,
-        delta.bili = Bilirubin.Merged - Bilirubin.day.7,
-        LILLE = 3.19 - 0.101 * Age + 0.147 * Albumin + 0.0165 * delta.bili - 0.206 * ren.insuf - 0.0065 * Bilirubin.Merged - 0.0096 * protime,
-        Lille.surv = 1 - (exp(-LILLE)/(1 + exp(-LILLE)))
+        #ren.insuf = ifelse(Creatinine.mg.dl < 1.3, 0, 1), 
+        #Bilirubin.Merged = Bilirubin.mg.dl * 17,
+        #delta.bili = Bilirubin.Merged - Bilirubin.day.7,
+        #LILLE = 3.19 - 0.101 * Age + 0.147 * Albumin + 0.0165 * delta.bili - 0.206 * ren.insuf - 0.0065 * Bilirubin.Merged - 0.0096 * protime,
+        #Lille.surv = 1 - (exp(-LILLE)/(1 + exp(-LILLE)))
         
     )
 
 colnames(imp_data2)
 
+imp_data2_Biliday7 <- imp_data_day7 %>% 
+    dplyr::mutate(
+        # Survival indicator
+        D90_surv = 1 - D90_DTH,
+        # Lille
+        ren.insuf = ifelse(Creatinine.mg.dl < 1.3, 0, 1), 
+        Bilirubin.Merged = Bilirubin.mg.dl * 17,
+        delta.bili = Bilirubin.Merged - Bilirubin.day.7,
+        LILLE = 3.19 - 0.101 * Age + 0.147 * Albumin + 0.0165 * delta.bili - 0.206 * ren.insuf - 0.0065 * Bilirubin.Merged - 0.0096 * protime,
+        Lille.surv = 1 - (exp(-LILLE)/(1 + exp(-LILLE)))
+        )
+
 #setwd("~/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/original models")
-#save(imp_data2, file = "imputed_orig_scores.Rdata")
+#save(imp_data2, imp_data2_Biliday7, file = "imputed_orig_scores.Rdata")
     
 # data preparation sensitivity analysis
 imp_data3 <- imp_sens_df %>% 

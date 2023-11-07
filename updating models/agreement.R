@@ -134,12 +134,12 @@ cut_off_surv_rate <- function(data, thres, var_name){
     # calculates mean of `var_name` and sample size for chosen `thres` value
     
     df <- data %>% 
-        filter(max_min_dev > thres) %>% 
+        filter(max_min_dev >= thres) %>% 
         ungroup() %>%
         summarise(sum_var = mean({{ var_name }}, na.rm = T))
     
     df_n <- data %>% 
-        filter(max_min_dev > thres) %>% 
+        filter(max_min_dev >= thres) %>% 
         ungroup() %>%
         summarise(n = length(unique(Subject)))
     
@@ -147,6 +147,9 @@ cut_off_surv_rate <- function(data, thres, var_name){
     
     return(out)
 }
+
+data_long23 <- data_long2 %>% distinct(Subject, .keep_all = T)
+data_long23%>% filter(Subject == 1005003)
 
 
 thresholds <- seq(0, 0.5, by = 0.01)
@@ -157,7 +160,7 @@ ind <- c(1, 5, 9, 13, 25, 41, 49) # select a subset to visualise
 p5 <- ggplot(res, aes(y = surv_rate, x = thres)) +
     geom_point() +
     geom_line() + 
-    geom_text(data = res[ind, ], aes(label = n),check_overlap = TRUE, nudge_y = 0.04, nudge_x = 0.015) +
+    geom_text(data = res[ind, ], aes(label = n), check_overlap = TRUE, nudge_y = 0.04, nudge_x = 0.015) +
     labs(x = "Range probabilities", y = "Survival Rate") +
     theme_classic2()
 

@@ -22,6 +22,10 @@ imp_index <- group_split(imp_data2, .imp)
 
 imp_ind <- max(imp_data2$.imp)
 
+imp_index_Bili7 <- group_split(imp_data2_Biliday7, .imp) 
+
+imp_ind_Bili7 <- max(imp_data2_Biliday7$.imp)
+
 # MELD_1
 cal_MELD.surv1 <- tibble()
 for(i in 1:imp_ind){
@@ -51,8 +55,8 @@ rm(temp2)
 
 # Lille
 cal_Lille <- tibble()
-for(i in 1:imp_ind){
-    temp <- roc(imp_index[[i]]$D90_DTH, imp_index[[i]]$Lille.surv)
+for(i in 1:imp_ind_Bili7){
+    temp <- roc(imp_index_Bili7[[i]]$D90_DTH, imp_index_Bili7[[i]]$Lille.surv)
     temp2 <- data.frame(sensitivities = temp$sensitivities, 
                         specificities = temp$specificities, 
                         thresholds = temp$thresholds)
