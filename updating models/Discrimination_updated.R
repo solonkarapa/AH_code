@@ -115,4 +115,5 @@ ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
 
 
 
-
+coords(roc_lille, x = "best", best.method = c("youden"))
+1-0.75
