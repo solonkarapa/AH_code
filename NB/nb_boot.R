@@ -136,8 +136,10 @@ combined_df %>%
               low = quantile(NB, alpha/2, na.rm = T),
               high = quantile(NB, 1 - alpha/2, na.rm = T),
               mean_NB_all = mean(NB_all)) %>% 
-    filter(status == "Original") %>% 
+    #filter(status == "Original") %>% 
     filter(model == "Lille" & threshold == 0.45)
+
+data_wide %>% filter(model == "Lille" & threshold == 0.45)
 
 #################
 ggplot(data_wide, aes(x = threshold, y = meanNB_diff)) +
