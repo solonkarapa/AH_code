@@ -5,6 +5,7 @@ library(tidyverse)
 library(rsample)
 library(reshape2)
 library(survminer) # for plotting theme
+library(ggsci)  # for color palette
 
 # funs
 path_funs <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/NB"
@@ -34,16 +35,16 @@ set.seed(353)
 bt_resamples <- bootstraps(test.data.short, times = n_boot, strata = "D90_DTH")
 
 # models 
-m_lille <- map_df(bt_resamples$splits, net_benefit_treated_wrapper, model = "lille")
+m_lille <- map_df(bt_resamples$splits, net_benefit_treated_wrapper, model = "Lille")
 m_lille$boot_id <- rep(1:n_boot, each = length(thresholds) * 2)
 
-m_cliff <- map_df(bt_resamples$splits, net_benefit_treated_wrapper, model = "cliff")
+m_cliff <- map_df(bt_resamples$splits, net_benefit_treated_wrapper, model = "CLIF-C ACLF")
 m_cliff$boot_id <- rep(1:n_boot, each = length(thresholds) * 2)
 
-meld1 <- map_df(bt_resamples$splits, net_benefit_treated_wrapper, model = "meld1")
+meld1 <- map_df(bt_resamples$splits, net_benefit_treated_wrapper, model = "MELD 1")
 meld1$boot_id <- rep(1:n_boot, each = length(thresholds) * 2)
 
-meld2 <- map_df(bt_resamples$splits, net_benefit_treated_wrapper, model = "meld2")
+meld2 <- map_df(bt_resamples$splits, net_benefit_treated_wrapper, model = "MELD 2")
 meld2$boot_id <- rep(1:n_boot, each = length(thresholds) * 2)
 
 combined_df <- rbind(m_lille, m_cliff, meld1, meld2)
@@ -52,7 +53,7 @@ alpha <- 0.05 # significance level
 
 data_wide <- dcast(combined_df, threshold + model + boot_id ~ status, value.var = "NB") %>%
     group_by(threshold, boot_id, model) %>% 
-    mutate(diff_NB = original - update) %>%
+    mutate(diff_NB = Original - Updated) %>%
     ungroup() %>%
     group_by(threshold, model) %>%
     summarize(meanNB_diff = mean(diff_NB),
@@ -62,33 +63,94 @@ data_wide <- dcast(combined_df, threshold + model + boot_id ~ status, value.var 
 #############################################   
 ###################### Plots  ###############
 ############################################# 
+
+# Original vs Updated comparison plots
 combined_df %>% group_by(threshold, status, model) %>% 
     summarize(meanNB = mean(NB),
-              low = quantile(NB, alpha/2),
-              high = quantile(NB, 1-alpha/2)) %>%
+              low = quantile(NB, alpha/2, na.rm = T),
+              high = quantile(NB, 1 - alpha/2, na.rm = T),
+              mean_NB_all = mean(NB_all)) %>%
     ggplot(aes(x = threshold, y = meanNB)) +
     geom_line(aes(col = status)) +
-    geom_ribbon(aes(ymin = low, ymax = high, fill = status, linetype = NA),  
-                alpha = 0.3, show.legend = F) + 
-    #geom_line(aes(col = status), alpha = 0.5) +
-    coord_cartesian(ylim = c(-0.1, 0.75)) +
+    #geom_ribbon(aes(ymin = low, ymax = high, fill = model, linetype = NA),  
+    #            alpha = 0.3, show.legend = F) + 
+    geom_line(aes(y = mean_NB_all), linetype = "dashed") +
+    geom_hline(yintercept = 0, linetype = "dotted") + 
+    coord_cartesian(ylim = c(-0.05, 0.4)) +
     facet_wrap(.~ model) +
+    scale_color_jco() + 
+    scale_fill_jco() + 
     theme_classic2() 
+
+# Updated comparison plots
+combined_df %>% 
+    filter(model %in% c("CLIF-C ACLF", "Lille", "MELD 1")) %>%
+    group_by(threshold, status, model) %>% 
+    summarize(meanNB = mean(NB),
+              low = quantile(NB, alpha/2, na.rm = T),
+              high = quantile(NB, 1 - alpha/2, na.rm = T),
+              mean_NB_all = mean(NB_all)) %>%
+    filter(status == "Updated") %>%
+    mutate(model = ifelse(model == "MELD 1", "MELD", model)) %>%
+    ggplot(aes(x = threshold, y = meanNB)) +
+    geom_line(aes(col = model), lwd = 1) +
+    #geom_ribbon(aes(ymin = low, ymax = high, fill = model, linetype = NA),  
+    #            alpha = 0.3, show.legend = F) + 
+    geom_line(aes(y = mean_NB_all), linetype = "dashed") +
+    geom_hline(yintercept = 0, linetype = "dotted") + 
+    coord_cartesian(ylim = c(-0.05, 0.35)) +
+    labs(col = "Updated Scores", y = "Net Benefit", x = "Threshold Risk probability") +
+    #facet_wrap(.~ model) +
+    scale_color_jco() + 
+    scale_fill_jco() + 
+    theme_classic2() 
+
+
+# Updated original plots
+combined_df %>% 
+    #filter(model %in% c("CLIF-C ACLF", "Lille", "MELD 1")) %>%
+    group_by(threshold, status, model) %>% 
+    summarize(meanNB = mean(NB),
+              low = quantile(NB, alpha/2, na.rm = T),
+              high = quantile(NB, 1 - alpha/2, na.rm = T),
+              mean_NB_all = mean(NB_all)) %>%
+    filter(status == "Original") %>%
+    #mutate(model = ifelse(model == "MELD 1", "MELD", model)) %>%
+    ggplot(aes(x = threshold, y = meanNB)) +
+    geom_line(aes(col = model), lwd = 1) +
+    #geom_ribbon(aes(ymin = low, ymax = high, fill = model, linetype = NA),  
+    #            alpha = 0.3, show.legend = F) + 
+    geom_line(aes(y = mean_NB_all), linetype = "dashed") +
+    geom_hline(yintercept = 0, linetype = "dotted") + 
+    coord_cartesian(ylim = c(-0.05, 0.35)) +
+    labs(col = "Original Scores", y = "Net Benefit", x = "Threshold Risk probability") +
+    #facet_wrap(.~ model) +
+    scale_color_jco() + 
+    scale_fill_jco() + 
+    theme_classic2() 
+
+combined_df %>% 
+    #filter(model %in% c("CLIF-C ACLF", "Lille", "MELD 1")) %>%
+    group_by(threshold, status, model) %>% 
+    summarize(meanNB = mean(NB),
+              low = quantile(NB, alpha/2, na.rm = T),
+              high = quantile(NB, 1 - alpha/2, na.rm = T),
+              mean_NB_all = mean(NB_all)) %>% 
+    filter(status == "Original") %>% 
+    filter(model == "Lille" & threshold == 0.45)
 
 #################
 ggplot(data_wide, aes(x = threshold, y = meanNB_diff)) +
-    geom_line() +
+    geom_line(lwd = 1) +
     geom_ribbon(aes(ymin = low, ymax = high, linetype = NA),  
                 alpha = 0.3, show.legend = F) +
     geom_hline(yintercept = 0, linetype = "dashed") +
-    labs(y = "Difference in NB", x = "Threshold Risk Probability") +
+    labs(y = "Difference in Net Benefit", x = "Threshold Risk Probability") +
     facet_wrap(.~ model, scales = "free_y") +
     theme_classic2()
 
 # lille threshold 
-data_wide %>% filter(model == "lille" & threshold == 0.45)
+data_wide %>% filter(model == "Lille" & threshold == 0.45)
+
+data_wide %>% filter(model == "MELD 1" & threshold == 0.45)
 #################
-
-
-
-
