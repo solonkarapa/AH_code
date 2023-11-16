@@ -1,9 +1,9 @@
 
-
 # load libraries
 library(tidyverse)
 library(rsample)
 library(reshape2)
+library(ggplot2)
 library(survminer) # for plotting theme
 library(ggsci)  # for color palette
 
@@ -78,12 +78,10 @@ combined_df %>% group_by(threshold, status, model) %>%
     geom_hline(yintercept = 0, linetype = "dotted") + 
     coord_cartesian(ylim = c(-0.05, 0.4)) +
     facet_wrap(.~ model) +
-    scale_color_jco() + 
-    scale_fill_jco() + 
     theme_classic2() 
 
 # Updated comparison plots
-combined_df %>% 
+updated <- combined_df %>% 
     filter(model %in% c("CLIF-C ACLF", "Lille", "MELD 1")) %>%
     group_by(threshold, status, model) %>% 
     summarize(meanNB = mean(NB),
@@ -98,16 +96,20 @@ combined_df %>%
     #            alpha = 0.3, show.legend = F) + 
     geom_line(aes(y = mean_NB_all), linetype = "dashed") +
     geom_hline(yintercept = 0, linetype = "dotted") + 
-    coord_cartesian(ylim = c(-0.05, 0.35)) +
+    coord_cartesian(ylim = c(-0.05, 0.3)) +
     labs(col = "Updated Scores", y = "Net Benefit", x = "Threshold Risk probability") +
     #facet_wrap(.~ model) +
-    scale_color_jco() + 
-    scale_fill_jco() + 
+    scale_color_brewer(palette = "Dark2") +
+    scale_fill_brewer(palette = "Dark2") +
     theme_classic2() 
 
 
 # Updated original plots
-combined_df %>% 
+library(RColorBrewer)
+customs_cols <- brewer.pal(6, "Dark2")
+customs_cols
+
+original <- combined_df %>% 
     #filter(model %in% c("CLIF-C ACLF", "Lille", "MELD 1")) %>%
     group_by(threshold, status, model) %>% 
     summarize(meanNB = mean(NB),
@@ -122,11 +124,11 @@ combined_df %>%
     #            alpha = 0.3, show.legend = F) + 
     geom_line(aes(y = mean_NB_all), linetype = "dashed") +
     geom_hline(yintercept = 0, linetype = "dotted") + 
-    coord_cartesian(ylim = c(-0.05, 0.35)) +
+    coord_cartesian(ylim = c(-0.05, 0.3)) +
     labs(col = "Original Scores", y = "Net Benefit", x = "Threshold Risk probability") +
     #facet_wrap(.~ model) +
-    scale_color_jco() + 
-    scale_fill_jco() + 
+    #scale_color_brewer(palette = "Dark2", type = "diverging") +
+    scale_color_manual(values = customs_cols[-3]) +
     theme_classic2() 
 
 combined_df %>% 
@@ -135,11 +137,27 @@ combined_df %>%
     summarize(meanNB = mean(NB),
               low = quantile(NB, alpha/2, na.rm = T),
               high = quantile(NB, 1 - alpha/2, na.rm = T),
-              mean_NB_all = mean(NB_all)) %>% 
+              mean_NB_all = mean(NB_all), 
+              mean_FPR = mean(FPR)) %>% 
     #filter(status == "Original") %>% 
     filter(model == "Lille" & threshold == 0.45)
 
 data_wide %>% filter(model == "Lille" & threshold == 0.45)
+
+tp <- sum(test.data.short$lille.death.risk >= 0.45 & test.data.short$D90_DTH == 1)
+tp    
+fp <- sum(test.data.short$lille.death.risk >= 0.45 & test.data.short$D90_DTH == 0)
+fp
+fp/tp
+
+tp <- sum(test.data.short$lille.death.risk.updated >= 0.45 & test.data.short$D90_DTH == 1)
+tp    
+fp <- sum(test.data.short$lille.death.risk.update >= 0.45 & test.data.short$D90_DTH == 0)
+fp
+
+fp/tp
+
+
 
 #################
 ggplot(data_wide, aes(x = threshold, y = meanNB_diff)) +
