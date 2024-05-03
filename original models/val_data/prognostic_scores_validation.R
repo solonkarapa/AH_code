@@ -105,7 +105,7 @@ Global_AlcHep.lille$LILLE <- 3.19 -
 Global_AlcHep.lille$Lille.risk <- (exp(-Global_AlcHep.lille$LILLE)/(1 + exp(-Global_AlcHep.lille$LILLE)))
 Global_AlcHep.lille$Lille.surv <- 1 - Global_AlcHep.lille$Lille.risk
 
-#path <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/original models/"
+#path <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/original models/val_data"
 #setwd(path)
 #save(stph.meld, stph.lille, stph.clif, file = "original_models.Rdata")
 
