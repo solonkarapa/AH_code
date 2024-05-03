@@ -138,3 +138,23 @@ library(xtable)
 xtable(as_tibble(tb_MELD))
 xtable(as_tibble(tb_Lille))
 xtable(as_tibble(tb_CLIF))
+
+# KM estimates and plots
+library(ggsurvfit)
+survfit2(Surv(Time_to_death_from_rand, Death_event) ~ 1, data = stph) %>% 
+    ggsurvfit() +
+    labs(
+        x = "Days",
+        y = "Overall survival probability"
+    ) + 
+    add_confidence_interval() +
+    add_risktable()
+
+summary(survfit(Surv(Time_to_death_from_rand, Death_event) ~ 1, data = stph), times = 90)
+summary(survfit(Surv(Time_to_death_from_rand, Death_event) ~ 1, data = stph), times = 183)
+
+survfit(Surv(Time_to_death_from_rand, Death_event) ~ 1, data = stph) %>% 
+    gtsummary::tbl_survfit(
+        times = 90,
+        label_header = "**1-year survival (95% CI)**"
+    )

@@ -22,7 +22,7 @@ stph <- rename(stph, Sodium = Sodium...Merged)
 stph$D90_surv <- 1 - stph$D90_DTH
 
 # Transform creatinine into mg/dl
-stph$Creatinine.mg.dl <- 0.0113*stph$Creatinine
+stph$Creatinine.mg.dl <- 0.0113 * stph$Creatinine
 
 # Time-to-event
 stph <- stph %>% 
