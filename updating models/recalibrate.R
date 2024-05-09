@@ -88,7 +88,6 @@ rownames(df) <- NULL
 library(xtable)
 xtable(df[c(3, 1, 2)])
 
-
 #path_to_save <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/updating models/"
 #setwd(path_to_save)
 #save(test.data, file = "recalibrated_models_default.Rdata")

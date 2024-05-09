@@ -105,14 +105,24 @@ Global_AlcHep.lille$LILLE <- 3.19 -
 Global_AlcHep.lille$Lille.risk <- (exp(-Global_AlcHep.lille$LILLE)/(1 + exp(-Global_AlcHep.lille$LILLE)))
 Global_AlcHep.lille$Lille.surv <- 1 - Global_AlcHep.lille$Lille.risk
 
+#############################################
+############# Add updated models ############
+#############################################
+Global_AlcHep.meld <- Global_AlcHep.meld %>% 
+    mutate(meld_updated = 2.54 - 0.09 * MELD.calc,
+           meld.surv.updated = 1/(1 + exp(- meld_updated))) 
+Global_AlcHep.lille <- Global_AlcHep.lille %>% 
+    mutate(lille_updated = 0.98 + 0.36 * LILLE,
+           lille.surv.updated = 1/(1 + exp(- lille_updated))) 
+
 #path <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/original models/val_data"
 #setwd(path)
-#save(stph.meld, stph.lille, stph.clif, file = "original_models.Rdata")
+#save(Global_AlcHep.meld, Global_AlcHep.lille, file = "models_validation.Rdata")
 
 # Tabulate the calculated prognostic scores and survival probabilities
 library(table1)
 tb_MELD <- table1(~ MELD.calc + MELD.surv + MELD.surv2 | factor(D90_surv), data = Global_AlcHep.meld)
-tb_Lille <- table1(~LILLE + Lille.surv | factor(D90_surv), data = Global_AlcHep.lille)
+tb_Lille <- table1(~ LILLE + Lille.surv | factor(D90_surv), data = Global_AlcHep.lille)
 
 library(xtable)
 xtable(as_tibble(tb_MELD))

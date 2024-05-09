@@ -1,5 +1,6 @@
 ######
-# This script reads in the stph data and creates workable data frames
+# This script reads in the Global_AlcHep data and creates workable data frames
+library(readxl)
 library(tidyverse)
 library(dplyr)
 
@@ -17,10 +18,9 @@ Global_AlcHep <- rename(Global_AlcHep, Sodium = "Sodium at admission")
 Global_AlcHep <- rename(Global_AlcHep, Bilirubin.day.7 = "Total bili day  7")
 
 # to check again - the discrepancy
-diff <- (Global_AlcHep$`INR admission` - Global_AlcHep$INR_admission)
-ind <- which(diff !=0)
-
-Global_AlcHep[ind, ]
+#diff <- (Global_AlcHep$`INR admission` - Global_AlcHep$INR_admission)
+#ind <- which(diff !=0 )
+#Global_AlcHep[ind, ]
 
 # Create survival variable
 Global_AlcHep <- rename(Global_AlcHep, D90_surv = "Alive at day 90\r\n")
