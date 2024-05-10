@@ -8,6 +8,7 @@ path <- "/Users/work/IDrive-Sync/Projects/MIMAH/data"
 load(paste0(path, "/stopah_plus_scores.Rdata"))
 stph <- rename(data_stph_prelim3)
 
+
 # Rename relevant variables
 stph <- rename(stph, Bilirubin.mg.dl = Bilirubin.Merged..mg.dL..Merged..calc.)
 stph <- rename(stph, Creatinine = Creatinine...Merged)

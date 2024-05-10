@@ -112,10 +112,17 @@ stph.lille$ren.insuf <- ifelse(stph.lille$Creatinine.mg.dl < 1.3, 0, 1)
 stph.lille$delta.bili <- stph.lille$Bilirubin.Merged - stph.lille$Bilirubin.day.7
 
 # Calculate the Lille score and corresponding survival probability
-stph.lille$LILLE <- 3.19 - 0.101*stph.lille$Age + 0.147*stph.lille$Albumin + 0.0165*stph.lille$delta.bili - 
-  0.206*stph.lille$ren.insuf - 0.0065*stph.lille$Bilirubin.Merged - 0.0096*stph.lille$protime
+stph.lille$LILLE <- 3.19 - 
+    0.101*stph.lille$Age.at.randomisation..calc. + 
+    0.147*stph.lille$Albumin + 0.0165*stph.lille$delta.bili - 
+    0.206*stph.lille$ren.insuf - 
+    0.0065*stph.lille$Bilirubin.Merged - 
+    0.0096*stph.lille$protime
 stph.lille$Lille.surv <- 1 - (exp(-stph.lille$LILLE)/(1 + exp(-stph.lille$LILLE)))
 
+
+#stph.lille[240,] %>% select(Bilirubin.Merged, Bilirubin.mg.dl, Bilirubin.day.7, Bilirubin.mg.dl.day.7, 
+#                      Lille...R, Lille.index, LILLE, Lille.surv, Age.at.randomisation..calc., Albumin, Creatinine, protime)
 #####
 # Create dataframe of all complete cases including prognostic scores (used later)
 stph.c <- merge(stph.meld, stph.clif, by = "Subject")

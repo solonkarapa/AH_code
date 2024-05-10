@@ -1,3 +1,9 @@
+
+#############################################
+# Load data 
+path <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/pre-analysis/val_data/"
+load(paste0(path, "full_sample_Global_AlcHep.Rdata"))
+
 #############################################
 ############### MELD score ##################
 #############################################
@@ -84,8 +90,8 @@ Global_AlcHep.meld$Albumin.MELD <- ifelse(Global_AlcHep.meld$Albumin> 3.5, 3.5, 
 Global_AlcHep.lille$ren.insuf <- ifelse(Global_AlcHep.lille$Creatinine <= 1.3, 0, 1)
 
 # convert from mg/L to micromole per litre (μmol/L)
-Global_AlcHep.lille$Bilirubin.Lille <- Global_AlcHep.lille$Bilirubin * 5.5506216696
-Global_AlcHep.lille$Bilirubin.day.7.Lille <- Global_AlcHep.lille$Bilirubin.day.7 * 5.5506216696
+Global_AlcHep.lille$Bilirubin.Lille <- Global_AlcHep.lille$Bilirubin * 17.1 #5.5506216696
+Global_AlcHep.lille$Bilirubin.day.7.Lille <- Global_AlcHep.lille$Bilirubin.day.7 * 17.1 #5.5506216696
 
 # convert from g/dL to g/L
 Global_AlcHep.lille$Albumin.Lille <- Global_AlcHep.lille$Albumin * 10
@@ -104,6 +110,10 @@ Global_AlcHep.lille$LILLE <- 3.19 -
 
 Global_AlcHep.lille$Lille.risk <- (exp(-Global_AlcHep.lille$LILLE)/(1 + exp(-Global_AlcHep.lille$LILLE)))
 Global_AlcHep.lille$Lille.surv <- 1 - Global_AlcHep.lille$Lille.risk
+
+#Global_AlcHep.lille[100,] %>% 
+#    select(Bilirubin, Bilirubin.Lille, Age, Bilirubin.day.7, Bilirubin.day.7.Lille, 
+#           Albumin, Creatinine, protime, LILLE, Lille.risk)
 
 #############################################
 ############# Add updated models ############
@@ -127,5 +137,6 @@ tb_Lille <- table1(~ LILLE + Lille.surv | factor(D90_surv), data = Global_AlcHep
 library(xtable)
 xtable(as_tibble(tb_MELD))
 xtable(as_tibble(tb_Lille))
+
 
 

@@ -1,4 +1,3 @@
-
 library(pROC)
 library(dplyr)
 library(ggplot2)
@@ -8,35 +7,48 @@ library(forcats)
 #library(ggROC)
 
 # load data
-path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/updating models"
-load(paste0(path_data, "/recalibrated_models_default.Rdata"))
+path_data <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/original models/val_data"
+load(paste0(path_data, "/models_validation.Rdata"))
 
 #############################################   
 ############### Calculate AUCs  #############
 #############################################  
 
-# MELD (survival function 1 and 2 do not matter here)
-roc_meld <- roc(test.data$D90_surv, test.data$meld.surv.updated)
+data_to_use <- "all" # all, severe, non-severe "no"
 
-# MELD 3.0
-#roc_meld3 <- roc(stph.meld$D90_DTH, stph.meld$MELD3.surv)
+if(data_to_use == "all"){
+    data_meld <- Global_AlcHep.meld
+    data_lille <- Global_AlcHep.lille
+}else if(data_to_use == "severe"){
+    data_meld <- Global_AlcHep.meld %>% filter(`DF at admission` >= 32)
+    data_lille <- Global_AlcHep.lille %>% filter(`DF at admission` >= 32)
+}else if(data_to_use == "non-severe"){
+    data_meld <- Global_AlcHep.meld %>% filter(`DF at admission` < 32)
+    data_lille <- Global_AlcHep.lille %>% filter(`DF at admission` < 32)
+}
 
-# MELD from VanDerwerken et al 2021
-#roc_meld.VanDerwerken <- roc(stph.meld$D90_DTH, stph.meld$MELD_Van)
+############################################# 
+# MELD original
+roc_meld_original <- roc(data_meld$D90_surv, data_meld$MELD.surv)
 
-# Lille
-roc_lille <- roc(test.data$D90_surv, test.data$lille.surv.updated)
+# MELD updated
+roc_meld_updated <- roc(data_meld$D90_surv, data_meld$meld.surv.updated)
 
-# CLIF-C ACLF
-roc_clif <- roc(test.data$D90_surv, test.data$clif.surv.updated)
+# Lille original
+roc_lille_original <- roc(data_lille$D90_surv, data_lille$LILLE)
+
+# Lille updated
+roc_lille_updated <- roc(data_lille$D90_surv, data_lille$lille.surv.updated)
 
 #############################################   
 ###################### Plots  ###############
 ############################################# 
-roc.list <- list(#"MELD VanDerwerken" = roc_meld.VanDerwerken,
-                 "CLIF-C ACLF" = roc_clif, 
-                 "Lille" = roc_lille,
-                 "MELD" = roc_meld)
+roc.list <- list(
+    "Lille original" = roc_lille_original,
+    "Lille updated" = roc_lille_updated, 
+    "MELD original" = roc_meld_original,
+    "MELD updated" = roc_meld_updated)
+
 #setwd(path_data)
 #save(roc.list, file = "ROC_updated.Rdata")
 
@@ -66,16 +78,16 @@ dat.ci.list <- lapply(ci.list, function(ciobj)
 
 df <- plyr::ldply(dat.ci.list, data.frame, .id = "name")
 
-pl <- ggroc(roc.list) + 
+pl <- ggroc(roc.list, lwd = 1.1) + 
     facet_grid(. ~ name) +
-    theme_minimal() + 
+    #theme_minimal() + 
     geom_ribbon(data = df, aes(x = x, ymin = lower, ymax = upper, fill = name), alpha = 0.3, inherit.aes = F) +
     geom_abline(slope = 1, intercept = 1, linetype = "dashed") + 
     labs(x = "Specificity", y = "Sensitivity") + 
     scale_color_brewer(palette = "Dark2") +
     scale_fill_brewer(palette = "Dark2") +
     coord_equal() +
-    theme_classic() +
+    theme_classic2() +
     theme(legend.position = "none") 
 
 data_wide$name <- data_wide$condition
@@ -83,7 +95,7 @@ data_wide$low_CL <- round(data_wide$low_CL, 2)
 data_wide$mean <- round(data_wide$mean, 2)
 data_wide$upper_CL <- round(data_wide$upper_CL, 2)
 
-pl + geom_text(data = data_wide, aes(0.05, 0.25, label = paste0("AUC (95% CI): ", mean, " (", low_CL, "-", upper_CL, ")" ), 
+pl + geom_text(data = data_wide, aes(0.01, 0.19, label = paste0("AUC (95% CI): ", mean, " (", low_CL, "-", upper_CL, ")" ), 
                                      hjust = 1), col = "black")
 
 #############################################   
@@ -99,7 +111,7 @@ rownames(df_AUC) <- c("low_CL", "mean", "upper_CL")
 
 df_AUC2 <- tibble::rownames_to_column(df_AUC, var = "AUC")
 
-df3 <- gather(df_AUC2, condition, measurement, `CLIF-C ACLF`:MELD, factor_key = TRUE)
+df3 <- gather(df_AUC2, condition, measurement, `Lille original`:`MELD updated`, factor_key = TRUE)
 data_wide <- spread(df3, AUC, measurement) %>% arrange(mean)
 
 # reorder factor levels
@@ -114,3 +126,5 @@ ggplot(data_wide, aes(x = mean, y = condition, col = condition)) +
     theme_classic() 
 
 
+pl + geom_text(data = data_wide, aes(0.05, 0.25, label = paste0("AUC (95% CI): ", mean, " (", low_CL, "-", upper_CL, ")" ), 
+                                     hjust = 1), col = "black")

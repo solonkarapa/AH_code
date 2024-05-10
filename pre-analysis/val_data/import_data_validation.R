@@ -47,6 +47,9 @@ Global_AlcHep.lille <- Global_AlcHep[complete.cases(Global_AlcHep$Bilirubin.day.
                                                     Global_AlcHep$protime, 
                                                     Global_AlcHep$Albumin),]
 
+#path <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/AH_code/AH_code/pre-analysis/val_data"
+#setwd(path)
+#save(Global_AlcHep.meld, Global_AlcHep.lille, file = "full_sample_Global_AlcHep.Rdata")
 
 # Create table of descriptive statistics and number of missing values per variable
 library(table1)

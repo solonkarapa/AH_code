@@ -78,7 +78,7 @@ p_calibration <- df_cal %>% filter(Score != "MELD 3.0") %>%
     coord_equal() +
     xlim(0, 1) + 
     ylim(0, 1) + 
-    labs(y =  "Observed survival proportion", x = "Predicted survival probability") +
+    labs(y = "Observed survival proportion", x = "Predicted survival probability") +
     theme_classic2() +
     theme(legend.position = "none")
 
