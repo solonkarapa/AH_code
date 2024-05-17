@@ -3,7 +3,6 @@
 library(ggplot2)
 library(dplyr)
 library(survminer) # for plotting theme
-library(RColorBrewer)
 
 path_funs <- "/Users/work/IDrive-Sync/Projects/MIMAH/code/funs"
 source(paste0(path_funs, "/calibration_fun.R"))
@@ -16,18 +15,8 @@ load(paste0(path_data, "/models_validation.Rdata"))
 ############### Calculate calibration  ######
 ############################################# 
 
-data_to_use <- "all" # all, severe, non_severe "no"
-
-if(data_to_use == "all"){
-    data_meld <- Global_AlcHep.meld
-    data_lille <- Global_AlcHep.lille
-    }else if(data_to_use == "severe"){
-        data_meld <- Global_AlcHep.meld %>% filter(`DF at admission` >= 32)
-        data_lille <- Global_AlcHep.lille %>% filter(`DF at admission` >= 32)
-        }else if(data_to_use == "non_severe"){
-            data_meld <- Global_AlcHep.meld %>% filter(`DF at admission` < 32)
-            data_lille <- Global_AlcHep.lille %>% filter(`DF at admission` < 32)
-        }
+data_meld <- Global_AlcHep.meld %>% filter(`Date of admission`> "2015-01-01")
+data_lille <- Global_AlcHep.lille %>% filter(`Date of admission`> "2015-01-01")
 
 ############################################# 
 # MELD 1 survival function
@@ -134,26 +123,3 @@ p_calibration_original
 ggarrange(p_calibration_original, p_calibration_updated, nrow = 2)
 
 cowplot::plot_grid(p_calibration_original, p_calibration_updated, nrow = 2, scale = 1)
-
-#############################################   
-############## Summary Stats  ###############
-############################################# 
-
-# compute calibration slopes and intercepts
-# MELD_1 survival function
-MELD_stats <- val.prob.ci.2_wrapper(data_meld$meld.surv.updated, data_meld$D90_surv, "MELD updated")
-
-# Lille
-Lille_stats <- val.prob.ci.2_wrapper(data_lille$lille.surv.updated, data_lille$D90_surv, "Lille updated")
-
-df_stats <- rbind(MELD_stats, Lille_stats) %>% relocate(Score)
-
-p_calibration_updated + geom_text(data = df_stats %>% filter(stat == "intercept"), 
-                          aes(0.1, 0.95, label = 
-                                  paste0("Intercept (95% CI): ", Point.estimate, " (", Lower.confidence.limit, "-", Upper.confidence.limit, ")"), 
-                              hjust = 0), col = "black") +
-    geom_text(data = df_stats %>% filter(stat == "slope"), 
-              aes(0.1, 0.90, label = 
-                      paste0("Slope (95% CI): ", Point.estimate, " (", Lower.confidence.limit, "-", Upper.confidence.limit, ")"), 
-                  hjust = 0), col = "black")
-

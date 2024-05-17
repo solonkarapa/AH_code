@@ -54,6 +54,12 @@ stph <- stph %>%
 #ind <-str_detect(colnames(stph), "rand")
 #stph[,ind]
 
+# check last day contact 
+#The trial is currently recruiting. Recruitment commenced
+#on 1 February 2011 and will finish on 28 February 2014 - 
+#from https://link.springer.com/content/pdf/10.1186/1745-6215-14-262.pdf
+max(stph$Date_Last_day_study_contact)
+
 # Handle missing data and create data frames for each of the prognostic scores
 stph.meld <- stph[complete.cases(stph$Bilirubin.mg.dl, stph$Creatinine, stph$INR, stph$Sodium),]
 stph.clif <- stph[complete.cases(stph$Bilirubin.mg.dl, stph$Creatinine, stph$INR, stph$WBC, 
