@@ -1,6 +1,4 @@
 
-
-# This script evaluated all calculations of model calibration
 library(ggplot2)
 library(dplyr)
 library(survminer) # for plotting theme
