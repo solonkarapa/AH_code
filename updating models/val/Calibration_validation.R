@@ -38,10 +38,6 @@ cal_MELD.surv$Score <- "MELD 1"
 cal_MELD.surv2 <- calibration(data_meld$MELD.surv2, y = data_meld$D90_surv)
 cal_MELD.surv2$Score <- "MELD 2"
 
-# MELD_2 survival function
-cal_MELD.surv2 <- calibration(data_meld$MELD.surv2, y = data_meld$D90_surv)
-cal_MELD.surv2$Score <- "MELD 2"
-
 # MELD VanDerwerken 
 cal_MELD.VanDerwerken <- calibration(data_meld$MELD_Van, y = data_meld$D90_surv)
 cal_MELD.VanDerwerken$Score <- "MELD VanDerwerken"
@@ -140,10 +136,10 @@ cowplot::plot_grid(p_calibration_original, p_calibration_updated, nrow = 2, scal
 ############################################# 
 
 # compute calibration slopes and intercepts
-# MELD_1 survival function
+# MELD updated
 MELD_stats <- val.prob.ci.2_wrapper(data_meld$meld.surv.updated, data_meld$D90_surv, "MELD updated")
 
-# Lille
+# Lille updated
 Lille_stats <- val.prob.ci.2_wrapper(data_lille$lille.surv.updated, data_lille$D90_surv, "Lille updated")
 
 df_stats <- rbind(MELD_stats, Lille_stats) %>% relocate(Score)
@@ -156,4 +152,21 @@ p_calibration_updated + geom_text(data = df_stats %>% filter(stat == "intercept"
               aes(0.1, 0.90, label = 
                       paste0("Slope (95% CI): ", Point.estimate, " (", Lower.confidence.limit, "-", Upper.confidence.limit, ")"), 
                   hjust = 0), col = "black")
+
+
+##### original models 
+# MELD 
+MELD_stats1 <- val.prob.ci.2_wrapper(data_meld$MELD.surv, data_meld$D90_surv, "MELD 1")
+MELD_stats2 <- val.prob.ci.2_wrapper(data_meld$MELD.surv2, data_meld$D90_surv, "MELD 2")
+MELD_Van <- val.prob.ci.2_wrapper(data_meld$MELD_Van, data_meld$D90_surv, "MELD Van")
+
+# Lille updated
+Lille_stats_orig <- val.prob.ci.2_wrapper(data_lille$Lille.surv, data_lille$D90_surv, "Lille")
+
+df_original_stats <- rbind(MELD_stats1,MELD_stats2, MELD_Van,  Lille_stats_orig)
+
+df_original_stats %>% filter(stat == "slope")
+library(xtable)
+xtable((df_original_stats))
+
 

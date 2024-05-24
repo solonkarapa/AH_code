@@ -60,12 +60,16 @@ Global_AlcHep$Gender_f <- as.factor(Global_AlcHep$Gender)
 tb1 <- table1::table1(~ Age + Bilirubin + Creatinine + Albumin + protime + 
                           INR + Bilirubin.day.7 + Gender_f + Sodium | factor(D90_surv_f), data = Global_AlcHep)
 tb1
-
+    
+    
 library(xtable)
 xtable(as_tibble(tb1))
 
 # 90-day death rate
 mean(Global_AlcHep$D90_DTH)
+
+# 
+unique(Global_AlcHep$Country)
 
 # KM estimates and plots
 library(ggsurvfit)
